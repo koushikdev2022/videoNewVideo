@@ -1,0 +1,20 @@
+{
+  "name": "videoeffect",
+  "version": "1.0.0",
+  "description": "video effect",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "iksen",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0",
+    "nodemon": "^3.1.9",
+    "path": "^0.12.7",
+    "sequelize": "^6.37.5"
+  }
+}
