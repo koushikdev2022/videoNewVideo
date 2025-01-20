@@ -8,6 +8,10 @@ const path = require("path");
 const load = require("../route/load")
 const app = express();
 
+require("dotenv").config();
+
+const port = process.env.PORT
+
 app.use(cors({
     origin: "*",  
     methods: ["GET", "POST"]
@@ -18,4 +22,4 @@ app.use(express.static(path.join(__dirname, "/public/")));
 app.use(load);
 
 
-module.exports = {app}
+module.exports = {app,port}
