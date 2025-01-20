@@ -3,6 +3,7 @@ const {
   Model,
   DataTypes, Sequelize
 } = require('sequelize');
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     
@@ -23,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     dob: DataTypes.DATE,
     avatar: DataTypes.STRING,
     otp: DataTypes.STRING,
-    otp_expired_at: DataTypes.DATEONLY,
+    otp_expaired_at: DataTypes.DATEONLY,
     refresh_token: DataTypes.TEXT,
     is_active: {
       type: DataTypes.INTEGER,
@@ -47,6 +48,15 @@ module.exports = (sequelize, DataTypes) => {
     tableName: 'users',
     timestamps: false,
     underscored: true,
+  });
+  User.addHook(
+    "beforeCreate",
+    user => (user.password = bcrypt.hashSync(user.password, 10))
+  );
+  User.addHook('beforeUpdate', async (user) => {
+    
+          user.password = await bcrypt.hashSync(user.password, 10);
+    
   });
   return User;
 };
