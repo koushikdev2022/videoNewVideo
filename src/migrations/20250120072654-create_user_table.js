@@ -49,7 +49,7 @@ module.exports = {
         unique: true,
       },
       dob: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: true,
       },
       otp: {

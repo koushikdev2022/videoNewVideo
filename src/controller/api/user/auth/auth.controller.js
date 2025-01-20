@@ -1,6 +1,7 @@
 const {User}=require("../../../../models");
 const checkPassword = require("../../../../helper/checkPassword");
 const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
+const jwt = require('jsonwebtoken');
 exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
@@ -76,7 +77,42 @@ exports.login = async(req,res) =>{
             refresh_token: refresh
         });
     }catch(err){
-        console.log("Error in register authController: ",err);
+        console.log("Error in login authController: ",err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status:false,
+            status_code:status
+        })
+    }
+}
+
+exports.getNewToken = async(req,res) =>{
+    try{
+        const token = req?.body?.refresh_token;
+        const decoded = jwt.decode(token);
+        const userId = decoded?.id;
+        const userDetails = await User.findOne({
+            where: {
+                id: userId,
+                refresh_token: token,
+            },
+        });
+        if (!userDetails) {
+            throw new HttpException(403, "Invalid refresh token or user not found")
+        }
+        const accesstoken = await generateAccessToken(userDetails);
+        const refreshtoken = await userRefreshAccessToken(userDetails);
+        res.status(200).json({
+            status: true,
+            status_code: 200,
+            token: accesstoken,
+            refresh_token:refreshtoken,
+            message: "Access token generated successfully.",
+        });
+    }catch(err){
+        console.log("Error in get new token authController: ",err);
         const status = err?.status || 400;
         const msg = err?.message || "Internal Server Error";
         return res.status(status).json({
