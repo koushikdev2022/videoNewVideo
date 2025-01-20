@@ -7,7 +7,14 @@ module.exports = (sequelize, DataTypes) => {
   class Video extends Model {
     
     static associate(models) {
-      
+        Video.belongsTo(models.User,{
+            foreignKey:"user_id",
+            as:"User"
+        })
+        Video.hasMany(models.AttributeVideo,{
+            foreignKey:"video_id",
+            as:"AttributeVideo"
+        })
     }
   }
   Video.init({

@@ -7,7 +7,10 @@ module.exports = (sequelize, DataTypes) => {
   class Transaction extends Model {
     
     static associate(models) {
-      
+        Transaction.belongsTo(models.User,{
+            foreignKey:"user_id",
+            as:"User"
+        })
     }
   }
   Transaction.init({
