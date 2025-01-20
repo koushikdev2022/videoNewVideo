@@ -1,4 +1,6 @@
 const {User}=require("../../../../models");
+const checkPassword = require("../../../../helper/checkPassword");
+const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
 exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
@@ -24,6 +26,55 @@ exports.register = async (req,res) =>{
                 status_code:400
             })
         }
+    }catch(err){
+        console.log("Error in register authController: ",err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status:false,
+            status_code:status
+        })
+    }
+}
+
+exports.login = async(req,res) =>{
+    try{
+        const username = req?.body?.username;
+        const password = req?.body?.password;
+        const user = await User.findOne({
+            attributes: ['id', 'username', 'first_name', 'last_name', 'password', 'email', 'phone', 'dob', 'is_active'],
+            where: {
+                username: username,
+            }
+        });
+        const passwordMatch = await checkPassword(password, user?.password);
+        if (!passwordMatch) {
+            throw new HttpException(422, "Invalid credential");
+        }
+        const token = await generateAccessToken(user);
+        const refresh = await userRefreshAccessToken(user);
+        await User.update(
+            { refresh_token: refresh },
+            { where: { id: user.id } }
+        );
+        // const userDetails= {
+        //     id:user?.id,
+        //     username:user?.username,
+        //     fullname:user?.fullname,
+        //     email:user?.email,
+        //     phone:user?.phone,
+        //     dob:user?.dob,
+        //     is_active:user?.is_active
+        // }
+        return res.status(200).json({
+            status: true,
+            message: 'User loggedin successfully',
+            status_code: 200,
+            // user_data: userDetails,
+            user_token: token,
+            refresh_token: refresh
+        });
     }catch(err){
         console.log("Error in register authController: ",err);
         const status = err?.status || 400;
