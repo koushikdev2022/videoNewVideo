@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const authRoute = require("./authRoute")
+const userOtpRoute = require("./userOtpRoute");
 const videoAttributeRoute = require('./videoAttributeRoute')
 const videoRoute = require("./videoRoute")
 
@@ -17,6 +18,10 @@ const defaultRoutes = [
     {
         prefix: "/video",
         route: videoRoute,
+    },
+    {
+        prefix: "/otp",
+        route: userOtpRoute,
     },
    
    
