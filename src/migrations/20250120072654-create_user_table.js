@@ -1,5 +1,7 @@
 'use strict';
 
+const { DataTypes } = require('sequelize');
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
@@ -57,6 +59,10 @@ module.exports = {
       otp_expaired_at: {
         type: Sequelize.DATE,
         allowNull: true,
+      },
+      refresh_token:{
+        type:Sequelize.TEXT,
+        allowNull:true
       },
       is_active: {
         type: Sequelize.INTEGER,
