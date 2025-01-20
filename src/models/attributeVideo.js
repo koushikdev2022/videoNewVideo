@@ -4,13 +4,16 @@ const {
   DataTypes, Sequelize
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class attributeVideo extends Model {
+  class AttributeVideo extends Model {
     
     static associate(models) {
-      
+        AttributeVideo.belongsTo(models.Video,{
+            foreignKey:"video_id",
+            as:"Video"
+        })
     }
   }
-  attributeVideo.init({
+  AttributeVideo.init({
     username: DataTypes.STRING,
     video_id: DataTypes.BIGINT,
     attributes: DataTypes.JSON,
@@ -28,10 +31,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   }, {
     sequelize,
-    modelName: 'attributeVideo',
+    modelName: 'AttributeVideo',
     tableName: 'attribute_videos',
     timestamps: false,
     underscored: true,
   });
-  return attributeVideo;
+  return AttributeVideo;
 };
