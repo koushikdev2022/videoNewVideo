@@ -1,6 +1,7 @@
 const {User}=require("../../../../models");
 exports.register = async (req,res) =>{
     try{
+        const payload = req?.body;
         
     }catch(err){
         console.log("Error in register authController: ",err);

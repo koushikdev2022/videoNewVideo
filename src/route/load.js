@@ -2,13 +2,17 @@ const express = require("express");
 const router = express.Router();
 
 const userLoadRoute = require("./user/userLoad")
+const userAuthRoute = require("./user/authRoute");
 
 const defaultRoutes = [
     {
         prefix: "/user",
         route: userLoadRoute,
     },
-   
+    {
+        prefix: "/user-auth",
+        route: userAuthRoute,
+    },
    
 ]
 defaultRoutes.forEach((route) => {
