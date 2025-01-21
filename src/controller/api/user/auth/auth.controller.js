@@ -7,11 +7,8 @@ exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
        
-
-sequelize
-  .authenticate()
-  .then(() => console.log('Database connected successfully'))
-  .catch((error) => console.error('Unable to connect to the database:', error));
+        console.log(sequelize)
+          
         const reg = await User.create({
             full_name:'',
             first_name:payload?.first_name,
