@@ -7,14 +7,11 @@ exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
         const reg = await User.create({
-            full_name:'',
             first_name:payload?.first_name,
             last_name:payload?.last_name,
             username:payload?.username,
             email:payload?.email,
             password:payload?.password,
-            phone:'',
-            dob:payload?.dob
         });
         if(reg.id>0){
             return res.status(201).json({

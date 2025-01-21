@@ -23,7 +23,7 @@ module.exports = {
       },
       full_name: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       first_name: {
         type: Sequelize.STRING,
@@ -45,8 +45,7 @@ module.exports = {
       },
       phone: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true,
+        allowNull: true,
       },
       dob: {
         type: Sequelize.DATEONLY,
