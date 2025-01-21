@@ -9,11 +9,11 @@ const DB_CLIENT   = process.env.DB_CLIENT;
 const DB_HOST     = process.env.DB_HOST; 
 
 
-console.log(DB_USERNAME,DB_PASSWORD,DB_DATABASE,DB_CLIENT,DB_HOST)
+
 
 const sequelize = new Sequelize(DB_DATABASE,  DB_USERNAME, DB_PASSWORD , {
     host: DB_HOST,
     dialect: DB_CLIENT
   });
 
-  module.exports = sequelize;
+module.exports = sequelize;
