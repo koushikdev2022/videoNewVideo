@@ -5,7 +5,11 @@ const userLoginValidation = require("../../validations/user/auth/userLoginValida
 const isUserAuthenticateMiddleware = require("../../middleware/user/isUserAuthenticateMiddleware");
 const authController = require("../../controller/api/user/auth/auth.controller")
 
+
 authRoute.post("/register",userRegistrationValidation,authController.register);
 authRoute.post('/login',userLoginValidation,authController.login)
 authRoute.post('/get-new-token',isUserAuthenticateMiddleware,authController.getNewToken);
+
+
+
 module.exports = authRoute
