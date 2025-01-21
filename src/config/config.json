@@ -8,7 +8,7 @@
   },
   "test": {
     "username": "videoeffect",
-    "password": "slicknewpass",
+    "password": "videoeffect",
     "database": "videoeffect",
     "host": "127.0.0.1",
     "dialect": "mysql"
