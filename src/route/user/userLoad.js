@@ -6,6 +6,7 @@ const userOtpRoute = require("./userOtpRoute");
 const videoAttributeRoute = require('./videoAttributeRoute')
 const videoRoute = require("./videoRoute")
 const tokenRoute = require("./tokenRoute")
+const fileUpload = require("./fileUploadRoute")
 
 const defaultRoutes = [
     {
@@ -28,6 +29,10 @@ const defaultRoutes = [
         prefix: "/token",
         route: tokenRoute,
     },
+    {
+        prefix: "/file",
+        route:fileUpload,
+    }
    
    
 ]
