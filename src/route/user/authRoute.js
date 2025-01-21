@@ -6,6 +6,7 @@ const isUserAuthenticateMiddleware = require("../../middleware/user/isUserAuthen
 const authController = require("../../controller/api/user/auth/auth.controller")
 
 
+
 authRoute.post("/register",authController.register);
 authRoute.post('/login',userLoginValidation,authController.login)
 authRoute.post('/get-new-token',isUserAuthenticateMiddleware,authController.getNewToken);
