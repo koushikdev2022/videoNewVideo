@@ -1,6 +1,8 @@
 const { app,port } = require("./src/main/main")
+require('dotenv').config();
 
 const sequelize = require("./src/config/db")
+
 sequelize
   .authenticate()
   .then(() => console.log('Database connected successfully'))
