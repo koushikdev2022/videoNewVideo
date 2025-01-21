@@ -9,7 +9,7 @@ const DB_CLIENT   = process.env.DB_CLIENT;
 const DB_HOST     = process.env.DB_HOST; 
 
 
-
+console.log(DB_USERNAME)
 
 const sequelize = new Sequelize(DB_DATABASE,  DB_USERNAME, DB_PASSWORD , {
     host: DB_HOST,
