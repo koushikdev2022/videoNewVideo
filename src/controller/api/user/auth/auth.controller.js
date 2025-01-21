@@ -2,10 +2,16 @@ const {User}=require("../../../../models");
 const checkPassword = require("../../../../helper/checkPassword");
 const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
 const jwt = require('jsonwebtoken');
-
+const sequelize = require("../../../../config/db")
 exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
+       
+
+sequelize
+  .authenticate()
+  .then(() => console.log('Database connected successfully'))
+  .catch((error) => console.error('Unable to connect to the database:', error));
         const reg = await User.create({
             full_name:'',
             first_name:payload?.first_name,
