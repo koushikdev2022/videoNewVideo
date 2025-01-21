@@ -6,6 +6,7 @@ const userOtpRoute = require("./userOtpRoute");
 const videoAttributeRoute = require('./videoAttributeRoute')
 const videoRoute = require("./videoRoute")
 const tokenRoute = require("./tokenRoute")
+const forgetPasswordRoute = require("./forgetPasswordRoute");
 
 const defaultRoutes = [
     {
@@ -28,7 +29,10 @@ const defaultRoutes = [
         prefix: "/token",
         route: tokenRoute,
     },
-   
+    {
+        prefix: "/forget-password",
+        route: forgetPasswordRoute,
+    },
    
 ]
 defaultRoutes.forEach((route) => {
