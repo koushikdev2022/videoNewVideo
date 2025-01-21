@@ -6,6 +6,7 @@ exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
         const reg = await User.create({
+            full_name:'',
             first_name:payload?.first_name,
             last_name:payload?.last_name,
             username:payload?.username,
@@ -104,13 +105,23 @@ exports.getNewToken = async(req,res) =>{
         }
         const accesstoken = await generateAccessToken(userDetails);
         const refreshtoken = await userRefreshAccessToken(userDetails);
-        res.status(200).json({
-            status: true,
-            status_code: 200,
-            token: accesstoken,
-            refresh_token:refreshtoken,
-            message: "Access token generated successfully.",
-        });
+        const user = await User.findByPk(userId);
+        const dataUpdate = user.update({refresh_token:refreshtoken})
+        if(dataUpdate){
+            res.status(200).json({
+                status: true,
+                status_code: 200,
+                token: accesstoken,
+                refresh_token:refreshtoken,
+                message: "Access token generated successfully.",
+            });
+        }else{
+            res.status(403).json({
+                status:false,
+                status_code:403,
+                message:"updation failed",
+            })
+        }
     }catch(err){
         console.log("Error in get new token authController: ",err);
         const status = err?.status || 400;
