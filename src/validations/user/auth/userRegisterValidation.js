@@ -5,7 +5,7 @@ const {User}=require("../../../models");
 const userRegistrationValidation = async (req, res, next) => {
     const payload = req?.body;
     const t = req.t;
-
+    console.log(payload)
     const validationRules = [
         body('first_name')
             .notEmpty()
