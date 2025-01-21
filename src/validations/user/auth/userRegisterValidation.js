@@ -46,24 +46,18 @@ const userRegistrationValidation = async (req, res, next) => {
             .withMessage('password must be string')
             .isLength({ min: 8 })
             .withMessage('password minimum 8 character'),
-        body('phone')
+        body('confirm_password')
             .notEmpty()
-            .withMessage('phone is required')
+            .withMessage("confirm_password is required")
+            .isLength({ min: 8 })
+            .withMessage('confirm_password minimum 8 character')
             .isString()
-            .withMessage('phone must be string')
-            .isMobilePhone()
-            .withMessage('invalid phone no')
+            .withMessage("confirm_password must be a string")
             .custom(async (value) => {
-                if (value) {
-                    const isExistUser = await User.findOne({ where: { phone: value } });
-                    if (isExistUser) throw new Error('phone no already taken by other');
+                if (value!=req?.body?.password) {
+                    throw new Error( "password and confirm password does not match")
                 }
             }),
-        body('dob')
-            .notEmpty()
-            .withMessage('dob is required')
-            .isDate({ format: 'YYYY-MM-DD' })
-            .withMessage('Date of birth must be in the format YYYY-MM-DD.'),
     ];
     await Promise.all(validationRules.map(validation => validation.run(req)));
 

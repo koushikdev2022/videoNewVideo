@@ -13,7 +13,7 @@ exports.register = async (req,res) =>{
             username:payload?.username,
             email:payload?.email,
             password:payload?.password,
-            phone:payload?.phone,
+            phone:'',
             dob:payload?.dob
         });
         if(reg.id>0){
@@ -45,6 +45,7 @@ exports.login = async(req,res) =>{
     try{
         const username = req?.body?.username;
         const password = req?.body?.password;
+        // console.log(password);
         const user = await User.findOne({
             attributes: ['id', 'username', 'first_name', 'last_name', 'password', 'email', 'phone', 'dob', 'is_active'],
             where: {
@@ -53,7 +54,11 @@ exports.login = async(req,res) =>{
         });
         const passwordMatch = await checkPassword(password, user?.password);
         if (!passwordMatch) {
-            throw new HttpException(422, "Invalid credential");
+            return res.status(400).json({
+                status: false,
+                message: 'Invalid credential',
+                status_code: 400,
+            });
         }
         const token = await generateAccessToken(user);
         const refresh = await userRefreshAccessToken(user);
@@ -102,7 +107,11 @@ exports.getNewToken = async(req,res) =>{
             },
         });
         if (!userDetails) {
-            throw new HttpException(403, "Invalid refresh token or user not found")
+            res.status(403).json({
+                status:false,
+                status_code:403,
+                message:"Invalid refresh token or user not found",
+            })
         }
         const accesstoken = await generateAccessToken(userDetails);
         const refreshtoken = await userRefreshAccessToken(userDetails);
@@ -112,7 +121,7 @@ exports.getNewToken = async(req,res) =>{
             res.status(200).json({
                 status: true,
                 status_code: 200,
-                token: accesstoken,
+                user_token: accesstoken,
                 refresh_token:refreshtoken,
                 message: "Access token generated successfully.",
             });
