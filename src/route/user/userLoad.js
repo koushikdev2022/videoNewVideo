@@ -5,6 +5,7 @@ const authRoute = require("./authRoute")
 const userOtpRoute = require("./userOtpRoute");
 const videoAttributeRoute = require('./videoAttributeRoute')
 const videoRoute = require("./videoRoute")
+const tokenRoute = require("./tokenRoute")
 
 const defaultRoutes = [
     {
@@ -22,6 +23,10 @@ const defaultRoutes = [
     {
         prefix: "/otp",
         route: userOtpRoute,
+    },
+    {
+        prefix: "/token",
+        route: tokenRoute,
     },
    
    

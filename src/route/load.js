@@ -9,10 +9,6 @@ const defaultRoutes = [
         prefix: "/user",
         route: userLoadRoute,
     },
-    {
-        prefix: "/user-auth",
-        route: userAuthRoute,
-    },
    
 ]
 defaultRoutes.forEach((route) => {
