@@ -12,7 +12,9 @@ exports.sendMail = async (req, res) => {
             user: user.id,
             time: Date.now()
         };
-        const token = atob(tokenPayload);
+        //  const token = atob(tokenPayload);
+        const token = Buffer.from(JSON.stringify(tokenPayload)).toString('base64');
+        console.log(token)
         const resetUrl = `${payload?.base_url}/reset-password/${token}`;
         let templatePath = path.resolve(__dirname, `../../../../pages/forgetPassword.ejs`);
         const emailHtml = await ejs.renderFile(templatePath, { url: resetUrl, name: user?.first_name });
