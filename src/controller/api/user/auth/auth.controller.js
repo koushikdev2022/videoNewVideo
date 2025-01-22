@@ -2,16 +2,17 @@ const {User}=require("../../../../models");
 const checkPassword = require("../../../../helper/checkPassword");
 const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
 const jwt = require('jsonwebtoken');
-
+const bcrypt = require('bcrypt');
 exports.register = async (req,res) =>{
     try{
         const payload = req?.body;
+        const pwd = await bcrypt.hashSync(payload?.password,10);
         const reg = await User.create({
             first_name:payload?.first_name,
             last_name:payload?.last_name,
             username:payload?.username,
             email:payload?.email,
-            password:payload?.password,
+            password:pwd,
         });
         if(reg.id>0){
             return res.status(201).json({
