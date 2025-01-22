@@ -1,45 +1,45 @@
-const {User}=require("../../../../models");
+const { User } = require("../../../../models");
 const checkPassword = require("../../../../helper/checkPassword");
 const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
 const jwt = require('jsonwebtoken');
 
-exports.register = async (req,res) =>{
-    try{
+exports.register = async (req, res) => {
+    try {
         const payload = req?.body;
         const reg = await User.create({
-            first_name:payload?.first_name,
-            last_name:payload?.last_name,
-            username:payload?.username,
-            email:payload?.email,
-            password:payload?.password,
+            first_name: payload?.first_name,
+            last_name: payload?.last_name,
+            username: payload?.username,
+            email: payload?.email,
+            password: payload?.password,
         });
-        if(reg.id>0){
+        if (reg.id > 0) {
             return res.status(201).json({
-                status:true,
-                message:"Registered successfully",
-                status_code:201
+                status: true,
+                message: "Registered successfully",
+                status_code: 201
             })
-        }else{
+        } else {
             return res.status(400).json({
-                status:true,
-                message:"Unable to register",
-                status_code:400
+                status: true,
+                message: "Unable to register",
+                status_code: 400
             })
         }
-    }catch(err){
-        console.log("Error in register authController: ",err);
+    } catch (err) {
+        console.log("Error in register authController: ", err);
         const status = err?.status || 400;
         const msg = err?.message || "Internal Server Error";
         return res.status(status).json({
             msg,
-            status:false,
-            status_code:status
+            status: false,
+            status_code: status
         })
     }
 }
 
-exports.login = async(req,res) =>{
-    try{
+exports.login = async (req, res) => {
+    try {
         const username = req?.body?.username;
         const password = req?.body?.password;
         // console.log(password);
@@ -80,20 +80,20 @@ exports.login = async(req,res) =>{
             user_token: token,
             refresh_token: refresh
         });
-    }catch(err){
-        console.log("Error in login authController: ",err);
+    } catch (err) {
+        console.log("Error in login authController: ", err);
         const status = err?.status || 400;
         const msg = err?.message || "Internal Server Error";
         return res.status(status).json({
             msg,
-            status:false,
-            status_code:status
+            status: false,
+            status_code: status
         })
     }
 }
 
-exports.getNewToken = async(req,res) =>{
-    try{
+exports.getNewToken = async (req, res) => {
+    try {
         const token = req?.body?.refresh_token;
         const decoded = jwt.decode(token);
         const userId = decoded?.id;
@@ -105,40 +105,40 @@ exports.getNewToken = async(req,res) =>{
         });
         if (!userDetails) {
             res.status(403).json({
-                status:false,
-                status_code:403,
-                message:"Invalid refresh token or user not found",
+                status: false,
+                status_code: 403,
+                message: "Invalid refresh token or user not found",
             })
         }
         const accesstoken = await generateAccessToken(userDetails);
         const refreshtoken = await userRefreshAccessToken(userDetails);
         const user = await User.findByPk(userId);
-        const dataUpdate = user.update({refresh_token:refreshtoken})
-        if(dataUpdate){
+        const dataUpdate = user.update({ refresh_token: refreshtoken })
+        if (dataUpdate) {
             res.status(200).json({
                 status: true,
                 status_code: 200,
                 user_token: accesstoken,
-                refresh_token:refreshtoken,
+                refresh_token: refreshtoken,
                 message: "Access token generated successfully.",
             });
-        }else{
+        } else {
             res.status(403).json({
-                status:false,
-                status_code:403,
-                message:"updation failed",
+                status: false,
+                status_code: 403,
+                message: "updation failed",
             })
         }
-    }catch(err){
-        console.log("Error in get new token authController: ",err);
+    } catch (err) {
+        console.log("Error in get new token authController: ", err);
         const status = err?.status || 400;
         const msg = err?.message || "Internal Server Error";
         return res.status(status).json({
             msg,
-            status:false,
-            status_code:status
+            status: false,
+            status_code: status
         })
     }
 
- 
+
 }
