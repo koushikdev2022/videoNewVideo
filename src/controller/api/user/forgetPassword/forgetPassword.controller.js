@@ -53,10 +53,13 @@ exports.resetPassword = async(req,res)=>{
     try{
         const payload = req?.body;
         // console.log(payload?.user_id);
-        // const password=await bcrypt.hashSync(payload?.password,10);
+        const password=await bcrypt.hashSync(payload?.password,10);
         const user = await User.findByPk(payload?.user_id);
-        let updatePwd = user.password = payload?.password;
-        await user.save();
+        // let updatePwd = user.password = payload?.password;
+        // await user.save();
+        const updatePwd = user.update({
+            password:password
+        });
         if(updatePwd){
             return res.status(200).json({
                 status:true,
