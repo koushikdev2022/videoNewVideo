@@ -150,3 +150,39 @@ exports.walletUpdate = async(req,res) =>{
         })
     }
 }
+
+
+
+
+exports.transactionFailed = async(req,res) =>{
+    try{
+          const payload = req?.body;
+          const user_id = req?.user?.id;
+          const transactionDetails = await Transaction.findByPk(payload?.transaction_id);
+          const updateTransactionDetails = await transactionDetails.update({
+            transaction_success:"failed"
+          })
+          if(updateTransactionDetails){
+            res.status(200).json({
+                status:true,
+                status_code:200,
+                message:"update successfully"
+            });
+          }else{
+            res.status(400).json({
+                status:false,
+                status_code:400,
+                message:"transaction failed"
+            });
+          }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
