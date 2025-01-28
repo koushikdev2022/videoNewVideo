@@ -2,14 +2,20 @@ const express = require("express");
 const router = express.Router();
 
 const adminRoute = require("./adminRoute")
+const adminUserRoute = require("./adminUserRoute")
+const isAdminAuthenticateMiddleware = require("../../middleware/admin/isAdminAuthenticateMiddleware")
 
 
 const defaultRoutes = [
     {
-        prefix: "/",
+        prefix: "/auth",
         route: adminRoute,
     },
-   
+    {
+        prefix: "/user",
+        route: adminUserRoute,
+        middleware:isAdminAuthenticateMiddleware
+    },
 ]
 defaultRoutes.forEach((route) => {
     if (route.middleware) {
