@@ -55,7 +55,7 @@ exports.status = async (req, res) => {
 
 
         const update = await userData?.update({
-            is_active: !updateData?.is_active
+            is_active: !userData?.is_active
         })
 
 
