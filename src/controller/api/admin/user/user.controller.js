@@ -60,13 +60,13 @@ exports.status = async (req, res) => {
 
 
         if (update) {
-            res.send(200).json({
+            res.status(200).json({
                 messsage: "update successfully",
                 status: true,
                 status_code: 200,
             })
         } else {
-            res.send(400).json({
+            res.status(400).json({
                 messsage: "updation failed",
                 status: false,
                 status_code: 400,
