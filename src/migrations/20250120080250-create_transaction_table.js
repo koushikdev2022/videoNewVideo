@@ -14,6 +14,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.BIGINT,
       },
+      plan_id: {
+        allowNull: false,
+        type: Sequelize.BIGINT,
+      },
       total_balance: {
         allowNull: false,
         type: Sequelize.FLOAT,

@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     plan_name: DataTypes.STRING,
     credit:DataTypes.INTEGER,
     price:DataTypes.FLOAT,
+    currency: {
+      type: DataTypes.STRING,
+      defaultValue: "usd",
+    },
     is_active: {
       type: DataTypes.INTEGER,
       defaultValue: 1,

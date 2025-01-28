@@ -8,7 +8,8 @@ exports.create = async(req,res) =>{
         const createData = await Plan.create({
             plan_name:payload?.plan_name,
             credit:payload?.credit,
-            price:payload?.price
+            price:payload?.price,
+            currency:payload?.currency
         })
         if(createData){
             res.status(201).json({
@@ -44,7 +45,8 @@ exports.update = async(req,res) =>{
         const updateData = await data.update({
             plan_name:payload?.plan_name,
             credit:payload?.credit,
-            price:payload?.price
+            price:payload?.price,
+            currency:payload?.currency
         })
         if(updateData){
             res.status(200).json({

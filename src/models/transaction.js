@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
   }
   Transaction.init({
     user_id: DataTypes.BIGINT,
+    plan_id: DataTypes.BIGINT,
     total_balance: DataTypes.FLOAT,
+    total_credit: DataTypes.INTEGER,
     transaction_type: {
         allowNull: false,
         type: Sequelize.ENUM('debit', 'credit'),

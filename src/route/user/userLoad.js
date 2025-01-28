@@ -8,6 +8,7 @@ const videoRoute = require("./videoRoute")
 const tokenRoute = require("./tokenRoute")
 const forgetPasswordRoute = require("./forgetPasswordRoute");
 const planRoute = require("../user/planRoute");
+const paymentRoute = require("./paymentRoute")
 
 const defaultRoutes = [
     {
@@ -37,6 +38,11 @@ const defaultRoutes = [
     {
         prefix: "/plan",
         route: planRoute,
+        middleware:isUserAuthenticateMiddleware
+    },
+    {
+        prefix: "/payment",
+        route: paymentRoute,
         middleware:isUserAuthenticateMiddleware
     },
 ]
