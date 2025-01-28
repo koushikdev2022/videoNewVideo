@@ -52,12 +52,12 @@ exports.status = async (req, res) => {
     try {
         const userid = req?.body?.id
         const userData = await User?.findByPk(userid)
-        console.log("UserData: ", userData);
+
 
         const updateData = await userData?.update({
             is_active: !updateData?.is_active
         })
-        console.log("Update Data:", updateData);
+
 
         if (updateData) {
             res.send(200).json({
