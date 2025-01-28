@@ -1,5 +1,6 @@
 const {Transaction,Wallet,User,Plan} = require("../../../../models")
 const Stripe = require('stripe');
+
 exports.initiate = async(req,res)=>{
     try{
       const payload = req?.body
@@ -54,6 +55,10 @@ exports.stripePaymentIntent = async(req,res)=>{
             currency, 
             payment_method_types: ['card'], 
         });
+        const transactionData = await Transaction.findByPk(payload?.transaction_id)
+        const update = transactionData.update({
+            payment_intend:paymentIntent.id
+        })
         res.status(201).json({
             status:true,
             clientSecret: paymentIntent.client_secret, 
@@ -175,6 +180,98 @@ exports.transactionFailed = async(req,res) =>{
                 message:"transaction failed"
             });
           }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
+
+
+exports.transactionDetails = async(req,res)=>{
+    try{
+          const userId = req?.user?.id
+          const limit = req?.body?.limit || 10;
+          const page = req?.body?.page || 1;
+          const offset = (page-1) * limit; 
+          const query = {
+              include:[{
+                 model:Plan,
+                 as:"Plan",
+                 required:false
+              }],
+              order:[['created_at','desc']],
+              where:{},
+              limit:limit,
+              offset:offset
+          }
+          query.where.user_id=userId
+          const count = await Transaction.count({
+            where:query.where,
+            distinct: true
+          })
+          const findTransaction = await Transaction.findAll(query)
+          if (findTransaction) {
+            res.status(200).json({
+                messsage: "data found",
+                status: true,
+                status_code: 200,
+                data: findTransaction,
+                data_count: count,
+                page: page
+            })
+        } else {
+            res.status(200).json({
+                messsage: "no data found",
+                status: true,
+                status_code: 200,
+                data: findTransaction,
+                data_count: count,
+                page: page
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
+
+
+
+exports.wallet = async(req,res)=>{
+    try{
+          const userId = req?.user?.id
+          const query = {
+              where:{},
+          }
+          query.where.user_id=userId
+          const findWallet = await Wallet.findAll(query)
+          if (findWallet) {
+            res.status(200).json({
+                messsage: "data found",
+                status: true,
+                status_code: 200,
+                data: findWallet,
+            })
+        } else {
+            res.status(200).json({
+                messsage: "no data found",
+                status: true,
+                status_code: 200,
+                data: findWallet,
+            })
+        }
     }catch (err) {
         console.log("Error in login authController: ", err);
         const status = err?.status || 400;

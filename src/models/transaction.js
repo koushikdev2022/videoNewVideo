@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey:"user_id",
             as:"User"
         })
+        Transaction.belongsTo(models.Plan,{
+          foreignKey:"plan_id",
+          as:"Plan"
+        })
     }
   }
   Transaction.init({
@@ -18,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     plan_id: DataTypes.BIGINT,
     total_balance: DataTypes.FLOAT,
     total_credit: DataTypes.INTEGER,
+    payment_intend:DataTypes.INTEGER,
     transaction_type: {
         allowNull: false,
         type: Sequelize.ENUM('debit', 'credit'),

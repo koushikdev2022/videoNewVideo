@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) => {
   class Plan extends Model {
     
     static associate(models) {
-
+      Plan.hasMany(models.Transaction,{
+        foreignKey:"plan_id",
+        as:"Transaction"
+      })
     }
   }
   Plan.init({
