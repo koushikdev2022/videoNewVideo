@@ -1,25 +1,34 @@
 const { validationResult } = require('express-validator');
 const { body } = require('express-validator');
-const { User } = require("../../models");
+const {Plan} =require("../../../models")
 
-const userStatus = async (req, res, next) => {
+const updatePlan = async (req, res, next) => {
     const payload = req?.body;
     const t = req.t;
     const validationRules = [
+        body('plan_name')
+            .exists()
+            .withMessage("plan_name is required"),
+        body('credit')
+            .exists()
+            .withMessage("credit is required"),
+          
+        body('price')
+            .exists()
+            .withMessage("price is required"),
         body('id')
             .exists()
             .withMessage("id is required")
             .isInt()
             .withMessage("id must be int")
-            .custom(async (value) => {
+        .custom(async (value) => {
                 if (value) {
-                    const user = await User.findOne({ where: { id:  payload?.id } });
-                    if (!user) {
-                        throw new Error( "user does not exist")
+                    const plan = await Plan.findOne({ where: { id: payload?.id } });
+                    if (!plan) {
+                        throw new Error( "plan does not exist")
                     }
                 }
             })
-     
         ];
 
     await Promise.all(validationRules.map(validation => validation.run(req)));
@@ -43,4 +52,4 @@ const userStatus = async (req, res, next) => {
     next();
 };
 
-module.exports = userStatus;
+module.exports = updatePlan;
