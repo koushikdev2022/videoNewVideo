@@ -1,6 +1,6 @@
 const { verifyAccessToken } = require("../../helper/generateAccessToken");
 
-const isUserAuthenticateMiddleware = async (req, res, next) => {
+const isAdminAuthenticateMiddleware = async (req, res, next) => {
 
     try {
       const authHeader = req.headers['authorization'];
@@ -34,4 +34,4 @@ const isUserAuthenticateMiddleware = async (req, res, next) => {
     }
   }
   
-  module.exports = isUserAuthenticateMiddleware;
+  module.exports = isAdminAuthenticateMiddleware;

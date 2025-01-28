@@ -3,6 +3,7 @@ const router = express.Router();
 
 const adminRoute = require("./adminRoute")
 const adminUserRoute = require("./adminUserRoute")
+const planRoute = require("../admin/planRoute")
 const isAdminAuthenticateMiddleware = require("../../middleware/admin/isAdminAuthenticateMiddleware")
 
 
@@ -14,6 +15,11 @@ const defaultRoutes = [
     {
         prefix: "/user",
         route: adminUserRoute,
+        middleware:isAdminAuthenticateMiddleware
+    },
+    {
+        prefix: "/plan",
+        route: planRoute,
         middleware:isAdminAuthenticateMiddleware
     },
 ]
