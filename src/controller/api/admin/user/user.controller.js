@@ -17,7 +17,7 @@ exports.list = async(req,res)=>{
             })
             const user = await User.findAll(query)
             if(user){
-                res.send(200).json({
+                res.status(200).json({
                     messsage:"data found",
                     status:true,
                     status_code:200,
@@ -26,7 +26,7 @@ exports.list = async(req,res)=>{
                     page:page
                 })
             }else{
-                res.send(200).json({
+                res.status(200).json({
                     messsage:"no data found",
                     status:true,
                     status_code:200,
