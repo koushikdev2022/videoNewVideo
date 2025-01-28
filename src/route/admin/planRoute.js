@@ -7,6 +7,8 @@ const updatePlanValidation = require("../../validations/admin/plan/updatePlanVal
 
 planRoute.post('/create',planValidation,planController.create);
 planRoute.post('/update',updatePlanValidation,planController.update);
-planRoute.post('/list',updatePlanValidation,planController.update);
+planRoute.post('/list',planController.list);
+planRoute.post('/status',planController.status);
+
 
 module.exports = planRoute;
