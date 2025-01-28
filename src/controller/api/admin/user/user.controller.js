@@ -55,6 +55,19 @@ exports.status = async(req,res)=>{
         const updateData = await userData?.update({
                  is_active:!updateData?.is_active
         })
+        if(updateData){
+            res.send(200).json({
+                messsage:"update successfully",
+                status:true,
+                status_code:200,
+            })
+        }else{
+            res.send(400).json({
+                messsage:"updation failed",
+                status:false,
+                status_code:400,
+            })
+        }
     }catch (err) {
         console.log("Error in login authController: ", err);
         const status = err?.status || 400;
