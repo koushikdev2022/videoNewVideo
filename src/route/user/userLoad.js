@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
-
+const isUserAuthenticateMiddleware = require("../../middleware/user/isUserAuthenticateMiddleware")
 const authRoute = require("./authRoute")
 const userOtpRoute = require("./userOtpRoute");
 const videoAttributeRoute = require('./videoAttributeRoute')
 const videoRoute = require("./videoRoute")
 const tokenRoute = require("./tokenRoute")
 const forgetPasswordRoute = require("./forgetPasswordRoute");
+const planRoute = require("../user/planRoute");
 
 const defaultRoutes = [
     {
@@ -33,7 +34,11 @@ const defaultRoutes = [
         prefix: "/forget-password",
         route: forgetPasswordRoute,
     },
-   
+    {
+        prefix: "/plan",
+        route: planRoute,
+        middleware:isUserAuthenticateMiddleware
+    },
 ]
 defaultRoutes.forEach((route) => {
     if (route.middleware) {
