@@ -10,7 +10,7 @@ exports.login = async(req,res) =>{
         const user = await User.findOne({
             where: {
                 username: username,
-                user_type:1,
+                role:1,
             }
         });
         const passwordMatch = await checkPassword(password, user?.password);

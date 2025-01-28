@@ -46,3 +46,23 @@ exports.list = async(req,res)=>{
         })
     }
 }
+
+
+exports.status = async(req,res)=>{
+    try{
+        const userid = req?.body?.id
+        const userData = await  User?.findByPk(userid)
+        const updateData = await userData?.update({
+                 is_active:!updateData?.is_active
+        })
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
