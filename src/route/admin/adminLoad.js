@@ -1,19 +1,13 @@
 const express = require("express");
 const router = express.Router();
 
-const userLoadRoute = require("./user/userLoad")
-const userAuthRoute = require("./user/authRoute");
+const adminRoute = require("./adminRoute")
 
-const adminLoad = require("./admin/adminLoad")
 
 const defaultRoutes = [
     {
-        prefix: "/user",
-        route: userLoadRoute,
-    },
-    {
-        prefix: "/admin",
-        route: adminLoad,
+        prefix: "/",
+        route: adminRoute,
     },
    
 ]
