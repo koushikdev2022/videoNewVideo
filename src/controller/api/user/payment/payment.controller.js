@@ -12,7 +12,7 @@ exports.initiate = async(req,res)=>{
            plan_id:payload?.plan_id,
            total_balance:planDetails?.price,
            transaction_type:"credit",
-           transaction_success:"pending",
+           transaction_success:"initiate",
            total_credit:planDetails?.credit,
       })
       if(transactionCreate?.id>0){
@@ -57,7 +57,8 @@ exports.stripePaymentIntent = async(req,res)=>{
         });
         const transactionData = await Transaction.findByPk(payload?.transaction_id)
         const update = transactionData.update({
-            payment_intend:paymentIntent.id
+            payment_intend:paymentIntent.id,
+            transaction_success:"pending",
         })
         res.status(201).json({
             status:true,
