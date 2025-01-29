@@ -1,7 +1,12 @@
 const { app,port } = require("./src/main/main")
+const express =require("express")
+
 require('dotenv').config();
 
+const path = require("path");
+
 const sequelize = require("./src/config/db")
+app.use(express.static(path.join(__dirname, "/public/")));
 
 sequelize
   .authenticate()
