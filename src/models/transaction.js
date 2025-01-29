@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
   Transaction.init({
     user_id: DataTypes.BIGINT,
     plan_id: DataTypes.BIGINT,
+    address_id: DataTypes.BIGINT,
     total_balance: DataTypes.FLOAT,
     total_credit: DataTypes.INTEGER,
     payment_intend:DataTypes.INTEGER,

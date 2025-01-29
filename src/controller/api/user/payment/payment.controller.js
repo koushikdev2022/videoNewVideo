@@ -6,13 +6,14 @@ exports.initiate = async(req,res)=>{
       const payload = req?.body
       const userId = req?.user?.id
       const  planDetails = await Plan.findByPk(payload?.plan_id)
-
+      const addressId = req?.body?.address_id || 0 
       const transactionCreate = await Transaction.create({
            user_id:userId,
            plan_id:payload?.plan_id,
            total_balance:planDetails?.price,
            transaction_type:"credit",
            transaction_success:"initiate",
+           address_id:addressId,
            total_credit:planDetails?.credit,
       })
       if(transactionCreate?.id>0){
