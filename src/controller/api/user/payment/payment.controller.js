@@ -218,7 +218,7 @@ exports.transactionDetails = async(req,res)=>{
             where:query.where,
             distinct: true
           })
-          totalPage = count/limit;
+          totalPage = Math.ceil(count/limit);
           const findTransaction = await Transaction.findAll(query)
           if (findTransaction) {
             res.status(200).json({
