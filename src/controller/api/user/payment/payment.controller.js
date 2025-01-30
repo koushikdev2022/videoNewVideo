@@ -201,6 +201,7 @@ exports.transactionDetails = async(req,res)=>{
           const limit = req?.body?.limit || 10;
           const page = req?.body?.page || 1;
           const offset = (page-1) * limit; 
+          let totalPage
           const query = {
               include:[{
                  model:Plan,
@@ -217,12 +218,14 @@ exports.transactionDetails = async(req,res)=>{
             where:query.where,
             distinct: true
           })
+          totalPage = count/limit;
           const findTransaction = await Transaction.findAll(query)
           if (findTransaction) {
             res.status(200).json({
                 messsage: "data found",
                 status: true,
                 status_code: 200,
+                total_page:totalPage,
                 data: findTransaction,
                 data_count: count,
                 page: page
@@ -233,6 +236,7 @@ exports.transactionDetails = async(req,res)=>{
                 status: true,
                 status_code: 200,
                 data: findTransaction,
+                total_page:totalPage,
                 data_count: count,
                 page: page
             })
