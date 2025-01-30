@@ -78,3 +78,8 @@ exports.list = async(req,res)=>{
          
 
 }
+
+
+exports.changePrimary = async(req,res)=>{
+    
+}

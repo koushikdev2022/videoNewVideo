@@ -6,6 +6,6 @@ const addAddressValidation = require("../../validations/user/address/addAdressVa
 
 addressRoute.post("/create",addAddressValidation,addressController.create)
 addressRoute.get("/list",addressController.list)
-
+addressRoute.get("/list",addressController.changePrimary)
 
 module.exports = addressRoute;

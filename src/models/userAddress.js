@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       defaultValue: Sequelize.NOW,
     },
-  }, {
+  }, {  
     sequelize,
     modelName: 'UserAddress',
     tableName: 'user_addresses',

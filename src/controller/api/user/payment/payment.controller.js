@@ -49,7 +49,7 @@ exports.stripePaymentIntent = async(req,res)=>{
         const payload = req?.body
         const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
         const planDetails = await Plan.findByPk(payload?.plan_id)
-        const amount = planDetails?.price
+        const amount = (planDetails?.price) * 100
         const currency = planDetails?.currency
         const paymentIntent = await stripe.paymentIntents.create({
             amount, 
