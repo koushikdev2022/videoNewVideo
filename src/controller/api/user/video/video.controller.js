@@ -58,3 +58,41 @@ exports.list = async (req,res) =>{
         })
     }
 } 
+
+
+exports.create = async (req,res)=>{
+    try{
+        const payload = req?.body
+        const userId = req?.user?.id
+        const video = await Video.create({
+                user_id:userId,
+                video:payload?.video,
+                video_type:payload?.video_type,
+                thumbnail:payload?.thumbnail,
+                converted_video:payload?.converted_video,
+                is_active:payload?.is_active
+        })
+        if(video){
+            res.status(201).json({
+                messsage:"create successfully",
+                status:true,
+                status_code:201,
+            })
+        }else{
+            res.status(400).json({
+                messsage:"create false",
+                status:false,
+                status_code:400,
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}

@@ -10,6 +10,7 @@ const forgetPasswordRoute = require("./forgetPasswordRoute");
 const planRoute = require("../user/planRoute");
 const paymentRoute = require("./paymentRoute")
 const addressRoute =require("./addressRoute")
+const profileRoute = require("./profileRoute")
 
 const defaultRoutes = [
     {
@@ -50,6 +51,11 @@ const defaultRoutes = [
     {
         prefix: "/address",
         route: addressRoute,
+        middleware:isUserAuthenticateMiddleware
+    },
+    {
+        prefix: "/profile",
+        route: profileRoute,
         middleware:isUserAuthenticateMiddleware
     },
 ]
