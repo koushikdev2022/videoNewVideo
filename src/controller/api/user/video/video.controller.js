@@ -6,6 +6,7 @@ exports.list = async (req,res) =>{
         const entity = req?.params?.entity || "image_video";
         const limit = req?.params?.limit || 10;
         const page = req?.params?.page || 1;
+        const userId = req?.user?.id
         const baseAiUrl = process?.env?.BASE_AI_URL
         const offset = (page-1)*limit
         const query = {
@@ -16,6 +17,7 @@ exports.list = async (req,res) =>{
         }
         query.where.video_type = entity
         query.where.is_active = 1
+        query.where.user_id = userId
         const count = await Video.count({
             where:query.where,
             distint:true
@@ -24,6 +26,7 @@ exports.list = async (req,res) =>{
         const allVideo  = await Video.findAll(query)
         if(allVideo){
             res.status(200).json({
+                baseUrl:baseAiUrl,
                 messsage: "data found",
                 status: true,
                 status_code: 200,
@@ -34,6 +37,7 @@ exports.list = async (req,res) =>{
             })
         }else{
             res.status(200).json({
+                baseUrl:baseAiUrl,
                 messsage: "data found",
                 status: true,
                 status_code: 200,
