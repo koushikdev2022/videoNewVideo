@@ -45,6 +45,7 @@ exports.update = async (req,res) =>{
 exports.profile = async(req,res)=>{
     try{
         const userId = req?.user?.id
+        const baseUrl = process.env.SERVER_URL
         const userDetails = await User.findOne({
             where:{
                 id:userId
@@ -52,6 +53,7 @@ exports.profile = async(req,res)=>{
         })
         if(userDetails){
             res.status(200).json({
+                base:baseUrl,
                 message:"update successfully",
                 status:true,
                 userDetails:userDetails,
@@ -59,6 +61,7 @@ exports.profile = async(req,res)=>{
             })
         }else{
             res.status(200).json({
+                base:baseUrl,
                 message:"update successfully",
                 status:true,
                 userDetails:userDetails,
