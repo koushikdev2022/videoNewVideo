@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     username: DataTypes.STRING,
     user_id: DataTypes.BIGINT,
     video: DataTypes.STRING,
+    video_type:DataTypes.STRING,
     converted_video:DataTypes.STRING,
     is_active: {
       type: DataTypes.INTEGER,
