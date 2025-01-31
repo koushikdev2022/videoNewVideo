@@ -81,13 +81,43 @@ exports.profile = async(req,res)=>{
 }
 exports.avatar = async(req,res)=>{
     try{
+        const id = req?.body?.id
+        const file = req?.file
+        const path = req?.file?.path
+        const type = req?.body?.type
+        const array = path.split('public')
+        const directory = array[array.length - 1];
+        const normalizedPath = directory.replace(/\\/g, '/');
+        const update = await Character?.update({
+            avatar:normalizedPath,
+            type:type
+        },{
+            where:{
+                id:id
+            }
+        })
+        if(update){
+            res.status(200).json({
+                status: true,
+                status_code: 200,
+                message: "update successfully",
+            });
+        }else{
+            res.status(400).json({
+                status: false,
+                status_code: 400,
+                message: "update failed",
+            });
+        }
+
+        
 
     }catch (err) {
-        console.log("Error in login authController: ", err);
+        console.log("Error in get new token authController: ", err);
         const status = err?.status || 400;
         const msg = err?.message || "Internal Server Error";
         return res.status(status).json({
-            msg,
+            message:msg,
             status: false,
             status_code: status
         })
