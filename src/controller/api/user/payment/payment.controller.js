@@ -97,6 +97,7 @@ exports.walletUpdate = async(req,res) =>{
                 user_id:user_id,
                 balance:planDetails?.credit,
                 account_freeze:0,
+                is_free:0,
                 is_active:0
              })
              if(create.id > 0){
@@ -105,7 +106,12 @@ exports.walletUpdate = async(req,res) =>{
                 queryStatus=false
              }
           }else{
-            let newBalance = userWallet?.balance + planDetails?.credit
+            let newBalance
+            if(is_free=1){
+                newBalance = planDetails?.credit
+            }else{
+                newBalance = userWallet?.balance + planDetails?.credit
+            }
             const walletUpdate = await Wallet.update({
                     balance:newBalance,
                     is_free:0
