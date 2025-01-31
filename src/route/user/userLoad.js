@@ -23,6 +23,7 @@ const defaultRoutes = [
     {
         prefix: "/video",
         route: videoRoute,
+        middleware:isUserAuthenticateMiddleware
     },
     {
         prefix: "/otp",
