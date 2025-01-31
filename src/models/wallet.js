@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       defaultValue: 1,
     },
+    is_free: {
+      type: DataTypes.INTEGER,
+      defaultValue: 1,
+    },
     created_at: {
       type: DataTypes.DATE,
       defaultValue: Sequelize.NOW,

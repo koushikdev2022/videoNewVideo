@@ -1,4 +1,4 @@
-const { User } = require("../../../../models");
+const { User ,Wallet} = require("../../../../models");
 const checkPassword = require("../../../../helper/checkPassword");
 const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
 const jwt = require('jsonwebtoken');
@@ -15,11 +15,26 @@ exports.register = async (req, res) => {
             password: pwd,
         });
         if (reg.id > 0) {
-            return res.status(201).json({
-                status: true,
-                message: "Registered successfully",
-                status_code: 201
+            const walletFreeCreation = await Wallet.create({
+                user_id:reg.id,
+                balance:500,
+                account_frize:0,
+                is_free:1,
             })
+            if(walletFreeCreation){
+                return res.status(201).json({
+                    status: true,
+                    message: "Registered successfully",
+                    status_code: 201
+                })
+            }else{
+                return res.status(201).json({
+                    status: true,
+                    message: "Registered successfully but not wallet free created",
+                    status_code: 201
+                })
+            }
+          
         } else {
             return res.status(400).json({
                 status: true,
