@@ -3,9 +3,10 @@ const {Video} = require("../../../../models")
 
 exports.list = async (req,res) =>{
     try{
-        const entity = req?.params?.entity || image_video;
+        const entity = req?.params?.entity || "image_video";
         const limit = req?.params?.limit || 10;
         const page = req?.params?.page || 1;
+        const baseAiUrl = process?.env?.BASE_AI_URL
         const offset = (page-1)*limit
         const query = {
             where:{},
