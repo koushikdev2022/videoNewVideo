@@ -4,7 +4,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.addColumn('videos', 'thumbnail', {
-      type: Sequelize.STRING, 
+      type: Sequelize.TEXT('long'), 
       allowNull: true,        
       after: 'video_type',
     });
