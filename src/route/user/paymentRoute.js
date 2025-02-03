@@ -15,6 +15,7 @@ paymentRoute.post('/wallet-update',walletUpdateValidation,paymentController.wall
 paymentRoute.post('/transaction-failed',transactionFailed,paymentController.transactionFailed)
 paymentRoute.post('/transaction-details',paymentController.transactionDetails)
 paymentRoute.post('/wallet',paymentController.wallet)
+paymentRoute.get('/wallet-deduct',paymentController.walletDeduct)
 
 
 module.exports = paymentRoute
