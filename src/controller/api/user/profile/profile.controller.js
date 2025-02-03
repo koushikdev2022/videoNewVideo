@@ -5,7 +5,7 @@ const {User} = require("../../../../models")
 exports.update = async (req,res) =>{
     try{
         const payload = req?.body
-        const userId = req?.id
+        const userId = req?.user?.id
         const profileUpdate = await User.update({
             full_name:payload?.full_name,
             first_name:payload?.first_name,
