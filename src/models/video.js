@@ -11,14 +11,9 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey:"user_id",
             as:"User"
         })
-        Video.hasMany(models.AttributeVideo,{
-            foreignKey:"video_id",
-            as:"AttributeVideo"
-        })
     }
   }
   Video.init({
-    username: DataTypes.STRING,
     user_id: DataTypes.BIGINT,
     video: DataTypes.STRING,
     video_type:DataTypes.STRING,

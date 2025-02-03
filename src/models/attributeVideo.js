@@ -7,10 +7,7 @@ module.exports = (sequelize, DataTypes) => {
   class AttributeVideo extends Model {
     
     static associate(models) {
-        AttributeVideo.belongsTo(models.Video,{
-            foreignKey:"video_id",
-            as:"Video"
-        })
+   
     }
   }
   AttributeVideo.init({

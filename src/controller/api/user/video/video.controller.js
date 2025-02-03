@@ -4,8 +4,8 @@ const {Video} = require("../../../../models")
 exports.list = async (req,res) =>{
     try{
         const entity = req?.params?.entity || "image_video";
-        const limit = req?.params?.limit || 10;
-        const page = req?.params?.page || 1;
+        const limit = parseInt(req?.params?.limit) || 10;
+        const page = parseInt(req?.params?.page) || 1;
         const userId = req?.user?.id
         const baseAiUrl = process?.env?.BASE_AI_URL
         const offset = (page-1)*limit
@@ -13,6 +13,7 @@ exports.list = async (req,res) =>{
             where:{},
             limit:limit,
             offset:offset,
+            attributes:["id", "user_id", "video", "video_type", "thumbnail", "converted_video", "is_active", "created_at", "updated_at"],
             order:[['created_at','desc']]
         }
         query.where.video_type = entity
