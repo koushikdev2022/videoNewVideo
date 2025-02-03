@@ -81,7 +81,7 @@ exports.profile = async(req,res)=>{
 }
 exports.avatar = async(req,res)=>{
     try{
-        const id = req?.body?.id
+        const id = req?.user?.id
         const file = req?.file
         const path = req?.file?.path
         const type = req?.body?.type
