@@ -13,7 +13,7 @@ exports.list = async (req,res) =>{
             where:{},
             limit:limit,
             offset:offset,
-            attributes:["id", "user_id", "video", "video_type", "thumbnail", "converted_video", "is_active", "created_at", "updated_at"],
+            attributes:["id", "user_id", "video", "video_type", "thumbnail","title","description", "converted_video", "is_active", "created_at", "updated_at"],
             order:[['created_at','desc']]
         }
         query.where.video_type = entity
@@ -71,6 +71,8 @@ exports.create = async (req,res)=>{
                 video_type:payload?.video_type,
                 thumbnail:payload?.thumbnail,
                 converted_video:payload?.converted_video,
+                title:payload?.title,
+                description:payload?.description,
                 is_active:payload?.is_active
         })
         if(video){
