@@ -319,7 +319,7 @@ exports.walletDeduct = async(req,res)=>{
                 transaction_success:"success"
 
             })
-            const newBalance = userWallet?.newBalance - 90;
+            const newBalance = parseInt(userWallet?.newBalance - 90);
             const updateWallet = await Wallet.update({
                 balance:newBalance
             },{
