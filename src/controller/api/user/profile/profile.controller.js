@@ -88,7 +88,7 @@ exports.avatar = async(req,res)=>{
         const array = path.split('public')
         const directory = array[array.length - 1];
         const normalizedPath = directory.replace(/\\/g, '/');
-        const update = await Character?.update({
+        const update = await User?.update({
             avatar:normalizedPath,
             type:type
         },{
