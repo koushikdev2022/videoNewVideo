@@ -319,9 +319,9 @@ exports.walletDeduct = async(req,res)=>{
                 transaction_success:"success"
 
             })
-            const newBalance = parseInt(userWallet?.newBalance - 90);
+            const newBalance = userWallet?.balance - 90;
             const updateWallet = await Wallet.update({
-                balance:newBalance
+                 balance:newBalance
             },{
                 where:{
                     user_id:userId
