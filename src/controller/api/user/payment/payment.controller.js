@@ -302,7 +302,7 @@ exports.wallet = async(req,res)=>{
 exports.walletDeduct = async(req,res)=>{
     try{
         const userId = req?.user?.id;
-        const userWallet = await Wallet.findAll({
+        const userWallet = await Wallet.findOne({
             where:{
                 user_id:userId
             }
