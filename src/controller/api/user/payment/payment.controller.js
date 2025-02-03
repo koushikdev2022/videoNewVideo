@@ -320,6 +320,7 @@ exports.walletDeduct = async(req,res)=>{
 
             })
             const newBalance = userWallet?.balance - 90;
+            console.log(newBalance)
             const updateWallet = await Wallet.update({
                  balance:newBalance
             },{
