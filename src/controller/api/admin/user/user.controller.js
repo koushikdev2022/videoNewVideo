@@ -204,3 +204,54 @@ exports.walletFreeze = async(req,res)=>{
         })
     }
 }
+
+
+exports.credit = async(req,res)=>{
+    try{
+        const payload = req?.body
+        const findTransaction = await Transaction.findOne({
+            where:{
+                id:payload?.transaction_id,
+                user_id:payload?.user_id
+            }
+        })
+        const credit = findTransaction?.total_credit
+        const WalletDetails = await Wallet.findOne({
+            where:{
+                id:payload?.id,
+                user_id:payload?.user_id
+            }
+        })
+        const newBalance = WalletDetails?.balance + credit;
+        const update = await Wallet?.update({
+            balance:newBalance
+        },{
+            where:{
+                id:payload?.id,
+                user_id:payload?.user_id
+            }
+        })
+        if(update){
+            res.status(200).json({
+                messsage: "update successfully",
+                status: true,
+                status_code: 200,
+            })
+        }else{
+            res.status(400).json({
+                messsage: "update failed",
+                status: false,
+                status_code: 400,
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}

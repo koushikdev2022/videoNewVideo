@@ -4,12 +4,14 @@ const adminUserRoute = express.Router();
 const userController = require("../../controller/api/admin/user/user.controller")
 const userStatusValidation = require("../../validations/admin/userStatusValidation")
 const walletFreezeValidation = require("../../validations/admin/walletFreezeValidation")
+const transactionCredit = require("../../validations/admin/transactionCreditValidation")
+
 
 adminUserRoute.post("/list",userController.list);
 adminUserRoute.post("/status",userStatusValidation,userController.status);
 adminUserRoute.post("/transaction",userStatusValidation,userController.transaction);
 adminUserRoute.post("/wallet",userStatusValidation,userController.wallet);
 adminUserRoute.post("/wallet-freeze",walletFreezeValidation,userController.walletFreeze);
-
+adminUserRoute.post("/give-credit",transactionCredit,userController.credit);
 
 module.exports = adminUserRoute;
