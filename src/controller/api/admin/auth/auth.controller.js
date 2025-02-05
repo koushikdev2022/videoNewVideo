@@ -14,7 +14,7 @@ exports.login = async(req,res) =>{
             }
         });
         if(user){
-            if(user?.is_active == 0){
+            if(user?.is_active === 1){
                 const passwordMatch = await checkPassword(password, user?.password);
                 if (!passwordMatch) {
                     return res.status(400).json({
