@@ -110,6 +110,7 @@ exports.transaction = async(req,res)=>{
             distinct: true
           })
           const findTransaction = await Transaction.findAll(query)
+          const totalPage = Math.ceil(count/limit)
           if (findTransaction) {
             res.status(200).json({
                 messsage: "data found",
@@ -117,6 +118,7 @@ exports.transaction = async(req,res)=>{
                 status_code: 200,
                 data: findTransaction,
                 data_count: count,
+                totalPage:totalPage,
                 page: page
             })
         } else {
@@ -126,6 +128,7 @@ exports.transaction = async(req,res)=>{
                 status_code: 200,
                 data: findTransaction,
                 data_count: count,
+                totalPage:totalPage,
                 page: page
             })
         }
