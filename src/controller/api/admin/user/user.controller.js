@@ -232,6 +232,12 @@ exports.credit = async(req,res)=>{
             }
         })
         if(update){
+            const update = await Transaction.update({
+                transaction_success:"success"
+            },{where:{
+                id:payload?.transaction_id,
+                user_id:payload?.user_id
+            }})
             res.status(200).json({
                 messsage: "update successfully",
                 status: true,
