@@ -13,6 +13,7 @@ adminUserRoute.post("/transaction",userStatusValidation,userController.transacti
 adminUserRoute.post("/wallet",userStatusValidation,userController.wallet);
 adminUserRoute.post("/wallet-freeze",walletFreezeValidation,userController.walletFreeze);
 adminUserRoute.post("/give-credit",transactionCredit,userController.credit);
+adminUserRoute.post("/video-status",userController.videoStatus);
 adminUserRoute.get("/user-video-list/:entity/:limit/:page/:user_id",userController.userVideo);
 
 

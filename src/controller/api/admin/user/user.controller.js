@@ -315,3 +315,42 @@ exports.userVideo = async (req,res) =>{
         })
     }
 } 
+
+exports.videoStatus = async(req,res)=>{
+    try{
+        const VideoDetails = Video.findByPk(req?.body?.id)
+        if(VideoDetails){
+               const update = VideoDetails.update({
+                   is_active:!VideoDetails?.is_active
+               })
+               if(update){
+                    res.status(200).json({
+                        messsage: "updated",
+                        status: true,
+                        status_code: 200,
+                    })
+               }else{
+                res.status(400).json({
+                    messsage: "updation failed",
+                    status: false,
+                    status_code: 400,
+                })
+               }
+        }else{
+            res.status(422).json({
+                messsage: "no video data found",
+                status: false,
+                status_code: 422,
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
