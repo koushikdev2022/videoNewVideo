@@ -279,7 +279,6 @@ exports.userVideo = async (req,res) =>{
             order:[['created_at','desc']]
         }
         query.where.video_type = entity
-        query.where.is_active = 1
         query.where.user_id = userId
         const count = await Video.count({
             where:query.where,
