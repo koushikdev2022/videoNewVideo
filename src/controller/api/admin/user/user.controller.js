@@ -16,6 +16,7 @@ exports.list = async (req, res) => {
             distinct: true
         })
         const user = await User.findAll(query)
+        const totalPage = Math.ceil(totalUser/limit)
         if (user) {
             res.status(200).json({
                 messsage: "data found",
@@ -23,6 +24,7 @@ exports.list = async (req, res) => {
                 status_code: 200,
                 data: user,
                 data_count: totalUser,
+                total_page:totalPage,
                 page: page
             })
         } else {
@@ -31,6 +33,7 @@ exports.list = async (req, res) => {
                 status: true,
                 status_code: 200,
                 data: user,
+                total_page:totalPage,
                 data_count: totalUser,
                 page: page
             })
