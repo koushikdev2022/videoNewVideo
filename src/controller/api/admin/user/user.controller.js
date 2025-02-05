@@ -1,4 +1,4 @@
-const { User,Transaction,Wallet,Plan } = require("../../../../models")
+const { User,Transaction,Wallet,Plan,Video } = require("../../../../models")
 
 exports.list = async (req, res) => {
     try {
