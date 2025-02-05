@@ -255,3 +255,63 @@ exports.credit = async(req,res)=>{
         })
     }
 }
+
+
+exports.userVideo = async (req,res) =>{
+    try{
+        const entity = req?.params?.entity || "image_video";
+        const limit = parseInt(req?.params?.limit) || 10;
+        const page = parseInt(req?.params?.page) || 1;
+        const userId = req?.params?.user_id
+        const baseAiUrl = process?.env?.BASE_AI_URL
+        const offset = (page-1)*limit
+        const query = {
+            where:{},
+            limit:limit,
+            offset:offset,
+            attributes:["id", "user_id", "video", "video_type", "thumbnail","title","description", "converted_video", "is_active", "created_at", "updated_at"],
+            order:[['created_at','desc']]
+        }
+        query.where.video_type = entity
+        query.where.is_active = 1
+        query.where.user_id = userId
+        const count = await Video.count({
+            where:query.where,
+            distint:true
+        })
+        const totalPage = Math.ceil(count/limit)
+        const allVideo  = await Video.findAll(query)
+        if(allVideo){
+            res.status(200).json({
+                baseUrl:baseAiUrl,
+                messsage: "data found",
+                status: true,
+                status_code: 200,
+                total_page:totalPage,
+                data: allVideo,
+                data_count: count,
+                page: page
+            })
+        }else{
+            res.status(200).json({
+                baseUrl:baseAiUrl,
+                messsage: "data found",
+                status: true,
+                status_code: 200,
+                total_page:totalPage,
+                data: allVideo,
+                data_count: count,
+                page: page
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+} 
