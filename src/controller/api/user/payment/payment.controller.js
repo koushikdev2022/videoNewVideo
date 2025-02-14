@@ -114,6 +114,7 @@ exports.walletUpdate = async(req,res) =>{
                 console.log("by")
                 newBalance = userWallet?.balance + planDetails?.credit
             }
+            console.log(newBalance)
             const walletUpdate = await Wallet.update({
                     balance:newBalance,
                     is_free:0
