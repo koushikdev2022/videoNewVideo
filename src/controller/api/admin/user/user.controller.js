@@ -281,7 +281,7 @@ exports.userVideo = async (req,res) =>{
             where:{},
             limit:limit,
             offset:offset,
-            attributes:["id", "user_id", "video", "video_type", "thumbnail","title","description", "converted_video", "is_active", "created_at", "updated_at"],
+            attributes:["id", "user_id", "video", "video_type", "thumbnail","is_feature","title","description", "converted_video", "is_active", "created_at", "updated_at"],
             order:[['created_at','desc']]
         }
         query.where.video_type = entity
@@ -333,6 +333,46 @@ exports.videoStatus = async(req,res)=>{
         if(VideoDetails){
                const update = VideoDetails.update({
                    is_active:!VideoDetails?.is_active
+               })
+               if(update){
+                    res.status(200).json({
+                        messsage: "updated",
+                        status: true,
+                        status_code: 200,
+                    })
+               }else{
+                res.status(400).json({
+                    messsage: "updation failed",
+                    status: false,
+                    status_code: 400,
+                })
+               }
+        }else{
+            res.status(422).json({
+                messsage: "no video data found",
+                status: false,
+                status_code: 422,
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
+
+
+exports.videoFeature = async(req,res)=>{
+    try{
+        const VideoDetails = Video.findByPk(req?.body?.id)
+        if(VideoDetails){
+               const update = VideoDetails.update({
+                   is_feature:!VideoDetails?.is_feature
                })
                if(update){
                     res.status(200).json({

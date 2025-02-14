@@ -14,6 +14,7 @@ adminUserRoute.post("/wallet",userStatusValidation,userController.wallet);
 adminUserRoute.post("/wallet-freeze",walletFreezeValidation,userController.walletFreeze);
 adminUserRoute.post("/give-credit",transactionCredit,userController.credit);
 adminUserRoute.post("/video-status",userController.videoStatus);
+adminUserRoute.post("/video-feature",userController.videoFeature);
 adminUserRoute.get("/user-video-list/:entity/:limit/:page/:user_id",userController.userVideo);
 
 

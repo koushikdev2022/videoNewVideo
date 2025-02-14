@@ -21,6 +21,10 @@ module.exports = (sequelize, DataTypes) => {
     title:DataTypes.TEXT('long'),
     description:DataTypes.TEXT('long'),
     converted_video:DataTypes.STRING,
+    is_feature:{
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
     is_active: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
