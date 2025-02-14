@@ -11,6 +11,7 @@ const planRoute = require("../user/planRoute");
 const paymentRoute = require("./paymentRoute")
 const addressRoute =require("./addressRoute")
 const profileRoute = require("./profileRoute")
+const resetPasswordRoute = require("./resetpasswordRoute");
 
 const defaultRoutes = [
     {
@@ -58,6 +59,12 @@ const defaultRoutes = [
         route: profileRoute,
         middleware:isUserAuthenticateMiddleware
     },
+    {
+        prefix: "/reset-password",
+        route: resetPasswordRoute,
+        middleware:isUserAuthenticateMiddleware
+    },
+    
 ]
 defaultRoutes.forEach((route) => {
     if (route.middleware) {
