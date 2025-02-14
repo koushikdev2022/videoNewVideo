@@ -107,7 +107,7 @@ exports.walletUpdate = async(req,res) =>{
              }
           }else{
             let newBalance
-            if(is_free=1){
+            if(is_free==1){
                 console.log("hellow")
                 newBalance = planDetails?.credit
             }else{
