@@ -1,4 +1,4 @@
-const {Transaction,Wallet,User,Plan} = require("../../../../models")
+const {Transaction,Wallet,User,Plan,UserAddress} = require("../../../../models")
 const Stripe = require('stripe');
 
 exports.initiate = async(req,res)=>{
@@ -217,6 +217,14 @@ exports.transactionDetails = async(req,res)=>{
                  model:Plan,
                  as:"Plan",
                  required:false
+              },{
+                model:User,
+                as:"User",
+                required:false
+              },{
+                model:UserAddress,
+                as:"UserAddress",
+                required:false
               }],
               order:[['created_at','desc']],
               where:{},

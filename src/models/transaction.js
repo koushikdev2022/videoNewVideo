@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
           foreignKey:"plan_id",
           as:"Plan"
         })
+        Transaction.belongsTo(models.UserAddress,{
+          foreignKey:"address_id",
+          as:"UserAddress"
+        })
     }
   }
   Transaction.init({
