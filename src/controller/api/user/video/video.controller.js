@@ -1,6 +1,64 @@
 
 const {Video} = require("../../../../models")
 
+
+exports.update = async (req,res)=>{
+    try{
+        const videoId = req?.body?.video_id
+        if(!videoId){
+            res.status(422).json({
+                status:false,
+                status_code:422,
+                message:"video_id is require"
+            })
+        }
+        if(!req?.body?.title){
+            res.status(422).json({
+                status:false,
+                status_code:422,
+                message:"title is require"
+            })
+        }
+        if(!req?.body?.description){
+            res.status(422).json({
+                status:false,
+                status_code:422,
+                message:"description is require"
+            })
+        }
+        const update = await Video.update({
+            title:req?.body?.title,
+            description:req?.body?.description
+        },{
+            where:{
+                id:videoId
+            }
+        })
+        if(update){
+            res.status(200).json({
+                status:true,
+                status_code:200,
+                message:"update successfully"
+            })
+        }else{
+            res.status(400).json({
+                status:false,
+                status_code:400,
+                message:"updation failed"
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
+
 exports.list = async (req,res) =>{
     try{
         const entity = req?.params?.entity || "image_video";
