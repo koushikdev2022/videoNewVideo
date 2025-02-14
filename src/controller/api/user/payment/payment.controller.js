@@ -108,8 +108,10 @@ exports.walletUpdate = async(req,res) =>{
           }else{
             let newBalance
             if(is_free=1){
+                console.log("hellow")
                 newBalance = planDetails?.credit
             }else{
+                console.log("by")
                 newBalance = userWallet?.balance + planDetails?.credit
             }
             const walletUpdate = await Wallet.update({

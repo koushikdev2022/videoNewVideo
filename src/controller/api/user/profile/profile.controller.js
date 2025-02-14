@@ -1,5 +1,5 @@
 
-const {User} = require("../../../../models")
+const {User,UserAddress} = require("../../../../models")
 
 
 exports.update = async (req,res) =>{
@@ -47,6 +47,11 @@ exports.profile = async(req,res)=>{
         const userId = req?.user?.id
         const baseUrl = process.env.SERVER_URL
         const userDetails = await User.findOne({
+            include:[{
+                model:UserAddress,
+                as:"UserAddress",
+                require:false
+            }],
             where:{
                 id:userId
             }

@@ -8,7 +8,10 @@ module.exports = (sequelize, DataTypes) => {
   class UserAddress extends Model {
     
     static associate(models) {
-       
+      UserAddress.belongsTo(models.User,{
+        foreignKey:"user_id",
+        as:"User"
+      })
     }
   }
   UserAddress.init({
