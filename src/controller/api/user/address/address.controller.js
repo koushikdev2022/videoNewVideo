@@ -17,14 +17,15 @@ exports.create = async(req,res)=>{
         if(createAddress.id >0){
             return res.status(201).json({
                 status: true,
+                id:createAddress.id,
                 message: "address successfully",
                 status_code: 201
             })
         }else{
-            return res.status(201).json({
-                status: true,
-                message: "address successfully",
-                status_code: 201
+            return res.status(400).json({
+                status: false,
+                message: "failed",
+                status_code: 400
             })
         }
     }catch (err) {
