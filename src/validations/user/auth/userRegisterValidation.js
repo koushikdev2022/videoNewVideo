@@ -38,6 +38,15 @@ const userRegistrationValidation = async (req, res, next) => {
                     if (isExistUser) throw new Error("email already taken by other");
                 }
             }),
+        body('phone')
+            .notEmpty()
+            .withMessage('phone is required')
+            .custom(async (value) => {
+                if (value) {
+                    const isExistUser = await User.findOne({ where: { phone: value } });
+                    if (isExistUser) throw new Error("phone already taken by other");
+                }
+            }),
         body('password')
             .notEmpty()
             .withMessage('password is required')

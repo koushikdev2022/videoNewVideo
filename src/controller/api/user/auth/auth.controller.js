@@ -3,56 +3,130 @@ const checkPassword = require("../../../../helper/checkPassword");
 const { generateAccessToken, userRefreshAccessToken } = require("../../../../helper/generateAccessToken");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const path = require('path');
+const ejs = require('ejs');
+const { mailCogfig } = require('../../../../config/mailConfig');
+// exports.register = async (req, res) => {
+//     try {
+//         const payload = req?.body;
+//         const pwd = await bcrypt.hashSync(payload?.password, 10);
+//         const reg = await User.create({
+//             first_name: payload?.first_name,
+//             last_name: payload?.last_name,
+//             username: payload?.username,
+//             email: payload?.email,
+//             password: pwd,
+//         });
+//         if (reg.id > 0) {
+//             const walletFreeCreation = await Wallet.create({
+//                 user_id:reg.id,
+//                 balance:500,
+//                 account_frize:0,
+//                 is_free:1,
+//             })
+//             if(walletFreeCreation){
+//                 return res.status(201).json({
+//                     status: true,
+//                     message: "Registered successfully",
+//                     status_code: 201
+//                 })
+//             }else{
+//                 return res.status(201).json({
+//                     status: true,
+//                     message: "Registered successfully but not wallet free created",
+//                     status_code: 201
+//                 })
+//             }
+          
+//         } else {
+//             return res.status(400).json({
+//                 status: true,
+//                 message: "Unable to register",
+//                 status_code: 400
+//             })
+//         }
+//     } catch (err) {
+//         console.log("Error in register authController: ", err);
+//         const status = err?.status || 400;
+//         const msg = err?.message || "Internal Server Error";
+//         return res.status(status).json({
+//             msg,
+//             status: false,
+//             status_code: status
+//         })
+//     }
+// }
+
+
 exports.register = async (req, res) => {
     try {
         const payload = req?.body;
+
         const pwd = await bcrypt.hashSync(payload?.password, 10);
         const reg = await User.create({
             first_name: payload?.first_name,
             last_name: payload?.last_name,
             username: payload?.username,
             email: payload?.email,
+            phone:payload?.phone,
             password: pwd,
         });
+
         if (reg.id > 0) {
             const walletFreeCreation = await Wallet.create({
-                user_id:reg.id,
-                balance:500,
-                account_frize:0,
-                is_free:1,
-            })
-            if(walletFreeCreation){
+                user_id: reg.id,
+                balance: 500,
+                account_frize: 0,
+                is_free: 1,
+            });
+
+            if (walletFreeCreation) {
+                const transporter = await mailCogfig()
+                const emailTemplatePath = path.join(__dirname,"../../../../",'templates', 'register.ejs');
+                const emailContent = await ejs.renderFile(emailTemplatePath, {
+                    first_name: reg.first_name, 
+                });
+
+                const mailOptions = {
+                    from: process.env.SMTP_USER,
+                    to: reg?.email, 
+                    subject: "Welcome to Our Platform!",
+                    html: emailContent, 
+                };
+
+                
+                await transporter.sendMail(mailOptions);
+
                 return res.status(201).json({
                     status: true,
-                    message: "Registered successfully",
-                    status_code: 201
-                })
-            }else{
+                    message: "Registered successfully and welcome email sent",
+                    status_code: 201,
+                });
+            } else {
                 return res.status(201).json({
                     status: true,
-                    message: "Registered successfully but not wallet free created",
-                    status_code: 201
-                })
+                    message: "Registered successfully, but wallet creation failed",
+                    status_code: 201,
+                });
             }
-          
         } else {
             return res.status(400).json({
-                status: true,
+                status: false,
                 message: "Unable to register",
-                status_code: 400
-            })
+                status_code: 400,
+            });
         }
     } catch (err) {
-        console.log("Error in register authController: ", err);
-        const status = err?.status || 400;
+        console.error("Error in register function: ", err);
+        const status = err?.status || 500;
         const msg = err?.message || "Internal Server Error";
         return res.status(status).json({
-            msg,
             status: false,
-            status_code: status
-        })
+            message: msg,
+            status_code: status,
+        });
     }
-}
+};
 
 exports.login = async (req, res) => {
     try {
