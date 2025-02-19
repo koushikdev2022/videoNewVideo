@@ -5,7 +5,8 @@ const adminRoute = require("./adminRoute")
 const adminUserRoute = require("./adminUserRoute")
 const planRoute = require("../admin/planRoute")
 const isAdminAuthenticateMiddleware = require("../../middleware/admin/isAdminAuthenticateMiddleware")
-
+const resetPasswordRoute = require("./resetPasswordRoute");
+const profileRoute = require("./profileRoute")
 
 const defaultRoutes = [
     {
@@ -20,6 +21,16 @@ const defaultRoutes = [
     {
         prefix: "/plan",
         route: planRoute,
+        middleware:isAdminAuthenticateMiddleware
+    },
+    {
+        prefix: "/reset-password",
+        route: resetPasswordRoute,
+        middleware:isAdminAuthenticateMiddleware
+    },
+    {
+        prefix: "/profile",
+        route: profileRoute,
         middleware:isAdminAuthenticateMiddleware
     },
 ]
