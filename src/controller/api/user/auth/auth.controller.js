@@ -133,7 +133,7 @@ exports.login = async (req, res) => {
         const password = req?.body?.password;
         // console.log(password);
         const user = await User.findOne({
-            attributes: ['id', 'username', 'first_name', 'last_name', 'password', 'email', 'phone', 'dob', 'is_active'],
+            attributes: ['id', 'username', 'first_name', 'last_name', 'password', 'email', 'dob', 'is_active'],
             where: {
                 username: username,
             }
