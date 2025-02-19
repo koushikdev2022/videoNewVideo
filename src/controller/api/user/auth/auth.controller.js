@@ -68,7 +68,6 @@ exports.register = async (req, res) => {
             last_name: payload?.last_name,
             username: payload?.username,
             email: payload?.email,
-            phone:payload?.phone,
             password: pwd,
         });
 

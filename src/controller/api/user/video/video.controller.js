@@ -58,7 +58,24 @@ exports.update = async (req,res)=>{
         })
     }
 }
+function encodeUrl(url) {
+    // Convert to Base64
+    let base64 = Buffer.from(url).toString("base64");
+    // Make it URL-safe by replacing +, /, and = with -, _, and empty string
+    return base64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
 
+// Function to decode the encoded URL
+function decodeUrl(encodedUrl) {
+    // Replace - and _ back to + and /
+    let base64 = encodedUrl.replace(/-/g, "+").replace(/_/g, "/");
+    // Pad with `=` to make it Base64 valid
+    while (base64.length % 4 !== 0) {
+        base64 += "=";
+    }
+    // Decode the Base64 string
+    return Buffer.from(base64, "base64").toString("utf8");
+}
 exports.list = async (req,res) =>{
     try{
         const entity = req?.params?.entity || "image_video";
@@ -66,6 +83,7 @@ exports.list = async (req,res) =>{
         const page = parseInt(req?.params?.page) || 1;
         const userId = req?.user?.id
         const baseAiUrl = process?.env?.BASE_AI_URL
+        const encodedUrl = encodeUrl(baseAiUrl);
         const offset = (page-1)*limit
         const query = {
             where:{},
@@ -90,6 +108,7 @@ exports.list = async (req,res) =>{
                 status: true,
                 status_code: 200,
                 total_page:totalPage,
+                encode:encodedUrl,
                 data: allVideo,
                 data_count: count,
                 page: page

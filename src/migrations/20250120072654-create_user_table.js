@@ -43,10 +43,6 @@ module.exports = {
         defaultValue: 2,
         comment:'1=admin and 2=users'
       },
-      phone: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
       dob: {
         type: Sequelize.DATEONLY,
         allowNull: true,
