@@ -1,6 +1,10 @@
 const {Transaction,Wallet,User,Plan,UserAddress} = require("../../../../models")
 const Stripe = require('stripe');
 
+const path = require('path');
+const ejs = require('ejs');
+const { mailCogfig } = require('../../../../config/mailConfig');
+
 exports.initiate = async(req,res)=>{
     try{
       const payload = req?.body
@@ -85,6 +89,7 @@ exports.walletUpdate = async(req,res) =>{
           const payload = req?.body;
           const user_id = req?.user?.id;
           let queryStatus = false;
+          const userDetails = await User.findByPk(user_id)
           const transactionDetails = await Transaction.findByPk(payload?.transaction_id);
           const planDetails = await Plan.findByPk(payload?.plan_id)
           const userWallet = await Wallet.findOne({
@@ -124,6 +129,22 @@ exports.walletUpdate = async(req,res) =>{
                     }
                 })
             if(walletUpdate){
+                const transporter = await mailCogfig()
+                const emailTemplatePath = path.join(__dirname,"../../../../",'templates', 'payment.ejs');
+                const emailContent = await ejs.renderFile(emailTemplatePath, {
+                    first_name: userDetails?.first_name, 
+                    credit:newBalance
+                });
+
+                const mailOptions = {
+                    from: process.env.SMTP_USER,
+                    to: userDetails?.email, 
+                    subject: "Welcome to Our Platform!",
+                    html: emailContent, 
+                };
+
+                
+                await transporter.sendMail(mailOptions);
                 queryStatus=true
             }else{
                 queryStatus=false

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Success</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(120deg, #f6d365, #fda085);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #f77f00;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        p {
+            font-size: 1.2em;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+        .credit {
+            color: #388e3c;
+            font-weight: bold;
+            font-size: 1.5em;
+        }
+        .cta {
+            margin-top: 20px;
+        }
+        .cta a {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #f77f00;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 1.2em;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        .cta a:hover {
+            background-color: #d65a00;
+            transform: translateY(-2px);
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Thank You, <%= first_name %>!</h1>
+        <p>Your payment was successful, and your wallet balance <span class="credit"><%=credit%>!</span>.</p>
+        <p>We appreciate your support and hope you enjoy using our services.</p>
+        <div class="cta">
+            <a href="https://storylimo.com/billing">Go to Dashboard</a>
+        </div>
+        <div class="footer">
+            <p>Best Regards,</p>
+            <p><strong>StoryLimo Team</strong></p>
+        </div>
+    </div>
+</body>
+</html>
