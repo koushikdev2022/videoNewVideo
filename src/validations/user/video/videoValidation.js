@@ -8,10 +8,10 @@ const videoValidation = async (req, res, next) => {
     const validationRules = [
             body('video')
                 .exists()
-                .withMessage("video is required")
-                .bail()
-                .matches(/^media/).withMessage("video must start with 'media'")
-                .not().matches(/^https?:\/\//).withMessage("http and https URLs are not allowed"),
+                .withMessage("video is required"),
+                // .bail()
+                // .matches(/^media/).withMessage("video must start with 'media'")
+                // .not().matches(/^https?:\/\//).withMessage("http and https URLs are not allowed"),
             body('video_type')
                 .exists()
                 .withMessage("video_type is required"),
