@@ -369,10 +369,15 @@ exports.videoStatus = async(req,res)=>{
 
 exports.videoFeature = async(req,res)=>{
     try{
-        const VideoDetails = Video.findByPk(req?.body?.id)
+        const id = req?.body?.id
+        const VideoDetails = Character.findByPk(req?.body?.id)
         if(VideoDetails){
-               const update = VideoDetails.update({
+               const update = Character.update({
                    is_feature:!VideoDetails?.is_feature
+               },{
+                where:{
+                    id:id
+                }
                })
                if(update){
                     res.status(200).json({
