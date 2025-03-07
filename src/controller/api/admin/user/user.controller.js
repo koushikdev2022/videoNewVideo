@@ -12,7 +12,10 @@ exports.list = async (req, res) => {
             limit: limit,
             offset: offset,
         }
-        query.where.id = id
+        if(id){
+            query.where.id = id
+        }
+    
         const totalUser = await User.count({
             where: query.where,
             distinct: true
