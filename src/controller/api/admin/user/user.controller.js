@@ -2,6 +2,7 @@ const { User,Transaction,Wallet,Plan,Video } = require("../../../../models")
 
 exports.list = async (req, res) => {
     try {
+        const id=req?.body?.id
         const limit = req?.body?.limit || 10;
         const page = req?.body?.page || 1;
         const offset = (page - 1) * limit;
@@ -11,6 +12,7 @@ exports.list = async (req, res) => {
             limit: limit,
             offset: offset,
         }
+        query.where.id = id
         const totalUser = await User.count({
             where: query.where,
             distinct: true
@@ -406,7 +408,7 @@ exports.videoFeature = async(req,res)=>{
         return res.status(status).json({
             msg,
             status: false,
-            status_code: status
+            status_code: statusṆ
         })
     }
 }
