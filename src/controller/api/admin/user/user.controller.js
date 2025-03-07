@@ -329,9 +329,9 @@ exports.userVideo = async (req,res) =>{
 
 exports.videoStatus = async(req,res)=>{
     try{
-        const VideoDetails = Video.findByPk(req?.body?.id)
+        const VideoDetails = await Video.findByPk(req?.body?.id)
         if(VideoDetails){
-               const update = VideoDetails.update({
+               const update =await VideoDetails.update({
                    is_active:!VideoDetails?.is_active
                })
                if(update){
@@ -370,9 +370,9 @@ exports.videoStatus = async(req,res)=>{
 exports.videoFeature = async(req,res)=>{
     try{
         const id = req?.body?.id
-        const VideoDetails = Character.findByPk(req?.body?.id)
+        const VideoDetails = await Character.findByPk(req?.body?.id)
         if(VideoDetails){
-               const update = Character.update({
+               const update = await Character.update({
                    is_feature:!VideoDetails?.is_feature
                },{
                 where:{
