@@ -45,13 +45,24 @@ exports.pageCount = async(req,res)=>{
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
             const ops = await page.getOperatorList();
+            const imgResources = await page.getResources();
 
             ops.fnArray.forEach((fn, index) => {
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
                     const imageKey = ops.argsArray[index]?.[0]; // Extract image object name
+                    const img = imgResources?.XObject?.[imageKey];
 
-                    if (imageKey) {
-                        uniqueImages.add(imageKey); // Count only unique image references
+                    if (img && img.width && img.height) {
+                        // FILTER: Ignore too small or too large images (adjust limits as needed)
+                        if (img.width < 50 || img.height < 50 || img.width > 2000 || img.height > 2000) {
+                            return;
+                        }
+
+                        // FILTER: Ignore duplicate images using a hash
+                        const hash = crypto.createHash("md5").update(imageKey).digest("hex");
+                        if (!uniqueImages.has(hash)) {
+                            uniqueImages.add(hash);
+                        }
                     }
                 }
             });
@@ -60,11 +71,9 @@ exports.pageCount = async(req,res)=>{
         res.status(200).json({
             status: true,
             pageCount,
-            imageCount: uniqueImages.size, // Count only unique images
+            imageCount: uniqueImages.size, // Count only valid images
             status_code: 200,
         });
-
-
     } catch (err) {
         console.error("Error in register function: ", err);
         const status = err?.status || 500;
