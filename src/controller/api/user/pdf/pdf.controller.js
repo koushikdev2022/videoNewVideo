@@ -45,18 +45,21 @@ exports.pageCount = async(req,res)=>{
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
             const ops = await page.getOperatorList();
+            const resourceDict = await page.getResources();
 
-            ops.fnArray.forEach((fn, index) => {
-                const arg = ops.argsArray[index];
+            // Find all XObject keys (potential images)
+            if (resourceDict && resourceDict["XObject"]) {
+                const xObjects = resourceDict["XObject"];
 
-                // Only count actual image objects, not vector graphics
-                if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
-                    if (arg && arg[0] && arg[0].width && arg[0].height) {
+                for (const key in xObjects) {
+                    const obj = xObjects[key];
+                    if (obj && obj.subtype === "Image") {
                         imageCount++;
                     }
                 }
-            });
+            }
         }
+
         res.status(200).json({
             status: true,
             pageCount,
