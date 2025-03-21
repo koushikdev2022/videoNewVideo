@@ -1,7 +1,7 @@
 const pdfParse = require("pdf-parse");
 const { PDFDocument } = require("pdf-lib");
 
-
+const crypto = require("crypto");
 
 exports.pageCount = async(req,res)=>{
     try{
