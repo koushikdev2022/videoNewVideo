@@ -40,27 +40,19 @@ exports.pageCount = async(req,res)=>{
         const pdfDoc = await pdfjsLib.getDocument({ data: pdfData }).promise;
 
         const pageCount = pdfDoc.numPages;
-        const imageHashes = new Set(); // Track unique images by hash
+        let imageCount = 0;
+        const seenImages = new Set(); // Store unique image object references
 
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
-            const ops = await page.getOperatorList();
+            const operatorList = await page.getOperatorList();
 
-            ops.fnArray.forEach((fn, index) => {
+            operatorList.fnArray.forEach((fn, index) => {
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
-                    const imageProps = ops.argsArray[index]?.[1] || {}; // Ensure it's an object
-
-                    if (imageProps.width && imageProps.height) {
-                        // Create a unique hash based on image properties
-                        const imageHash = crypto
-                            .createHash("sha256")
-                            .update(`${imageProps.width}-${imageProps.height}`)
-                            .digest("hex");
-
-                        // Filter out very small images & prevent duplicates
-                        if (imageProps.width > 30 && imageProps.height > 30) {
-                            imageHashes.add(imageHash);
-                        }
+                    const imageName = operatorList.argsArray[index]?.[0]; // Extract image name
+                    if (imageName && !seenImages.has(imageName)) {
+                        seenImages.add(imageName);
+                        imageCount++;
                     }
                 }
             });
@@ -69,9 +61,10 @@ exports.pageCount = async(req,res)=>{
         res.status(200).json({
             status: true,
             pageCount,
-            imageCount: imageHashes.size, // Count only unique images
+            imageCount,
             status_code: 200,
         });
+
 
     } catch (err) {
         console.error("Error in register function: ", err);
