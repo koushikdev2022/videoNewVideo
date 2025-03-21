@@ -15,6 +15,25 @@ exports.pageCount = async(req,res)=>{
         // const pageCount = pdfDoc.getPageCount();
 
     
+        // const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
+
+        // const pdfData = new Uint8Array(req.file.buffer);
+        // const pdfDoc = await pdfjsLib.getDocument({ data: pdfData }).promise;
+
+        // const pageCount = pdfDoc.numPages;
+        // let imageCount = 0;
+
+        // for (let i = 1; i <= pageCount; i++) {
+        //     const page = await pdfDoc.getPage(i);
+        //     const ops = await page.getOperatorList();
+
+        //     // Count image drawing operations
+        //     ops.fnArray.forEach((fn) => {
+        //         if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
+        //             imageCount++;
+        //         }
+        //     });
+        // }
         const pdfjsLib = await import("pdfjs-dist/legacy/build/pdf.mjs");
 
         const pdfData = new Uint8Array(req.file.buffer);
@@ -27,14 +46,17 @@ exports.pageCount = async(req,res)=>{
             const page = await pdfDoc.getPage(i);
             const ops = await page.getOperatorList();
 
-            // Count image drawing operations
-            ops.fnArray.forEach((fn) => {
+            ops.fnArray.forEach((fn, index) => {
+                const arg = ops.argsArray[index];
+
+                // Only count actual image objects, not vector graphics
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
-                    imageCount++;
+                    if (arg && arg[0] && arg[0].width && arg[0].height) {
+                        imageCount++;
+                    }
                 }
             });
         }
-
         res.status(200).json({
             status: true,
             pageCount,
