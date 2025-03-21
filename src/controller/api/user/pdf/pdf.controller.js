@@ -44,25 +44,16 @@ exports.pageCount = async(req,res)=>{
 
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
-            const ops = await page.getOperatorList();
-            const imgResources = await page.getResources();
+            const ops = await page.getOperatorList(); // Use operator list instead of getResources
 
             ops.fnArray.forEach((fn, index) => {
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
                     const imageKey = ops.argsArray[index]?.[0]; // Extract image object name
-                    const img = imgResources?.XObject?.[imageKey];
 
-                    if (img && img.width && img.height) {
-                        // FILTER: Ignore too small or too large images (adjust limits as needed)
-                        if (img.width < 50 || img.height < 50 || img.width > 2000 || img.height > 2000) {
-                            return;
-                        }
-
+                    if (imageKey) {
                         // FILTER: Ignore duplicate images using a hash
                         const hash = crypto.createHash("md5").update(imageKey).digest("hex");
-                        if (!uniqueImages.has(hash)) {
-                            uniqueImages.add(hash);
-                        }
+                        uniqueImages.add(hash);
                     }
                 }
             });
