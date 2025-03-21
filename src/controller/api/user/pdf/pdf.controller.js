@@ -40,7 +40,7 @@ exports.pageCount = async(req,res)=>{
         const pdfDoc = await pdfjsLib.getDocument({ data: pdfData }).promise;
 
         const pageCount = pdfDoc.numPages;
-        const uniqueImages = new Set();
+        const imageHashes = new Set(); // Track unique images by hash
 
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
@@ -48,20 +48,18 @@ exports.pageCount = async(req,res)=>{
 
             ops.fnArray.forEach((fn, index) => {
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
-                    const imageKey = ops.argsArray[index]?.[0]; // Extract image object name
                     const imageProps = ops.argsArray[index]?.[1] || {}; // Ensure it's an object
 
-                    if (imageKey) {
-                        // Ensure width & height exist, and filter very small images
-                        if (
-                            typeof imageProps.width === "number" &&
-                            typeof imageProps.height === "number" &&
-                            imageProps.width > 30 &&
-                            imageProps.height > 30
-                        ) {
-                            uniqueImages.add(imageKey);
-                        } else {
-                            uniqueImages.add(imageKey); // Fallback: count if properties are missing
+                    if (imageProps.width && imageProps.height) {
+                        // Create a unique hash based on image properties
+                        const imageHash = crypto
+                            .createHash("sha256")
+                            .update(`${imageProps.width}-${imageProps.height}`)
+                            .digest("hex");
+
+                        // Filter out very small images & prevent duplicates
+                        if (imageProps.width > 30 && imageProps.height > 30) {
+                            imageHashes.add(imageHash);
                         }
                     }
                 }
@@ -71,7 +69,7 @@ exports.pageCount = async(req,res)=>{
         res.status(200).json({
             status: true,
             pageCount,
-            imageCount: uniqueImages.size, // Count only unique real images
+            imageCount: imageHashes.size, // Count only unique images
             status_code: 200,
         });
 
