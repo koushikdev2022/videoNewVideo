@@ -40,19 +40,18 @@ exports.pageCount = async(req,res)=>{
         const pdfDoc = await pdfjsLib.getDocument({ data: pdfData }).promise;
 
         const pageCount = pdfDoc.numPages;
-        let imageCount = 0;
-        const seenImages = new Set(); // Store unique image object references
+        const uniqueImages = new Set(); // Track unique images
 
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
-            const operatorList = await page.getOperatorList();
+            const ops = await page.getOperatorList();
 
-            operatorList.fnArray.forEach((fn, index) => {
+            ops.fnArray.forEach((fn, index) => {
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
-                    const imageName = operatorList.argsArray[index]?.[0]; // Extract image name
-                    if (imageName && !seenImages.has(imageName)) {
-                        seenImages.add(imageName);
-                        imageCount++;
+                    const imageKey = ops.argsArray[index]?.[0]; // Extract image object name
+
+                    if (imageKey) {
+                        uniqueImages.add(imageKey); // Count only unique image references
                     }
                 }
             });
@@ -61,7 +60,7 @@ exports.pageCount = async(req,res)=>{
         res.status(200).json({
             status: true,
             pageCount,
-            imageCount,
+            imageCount: uniqueImages.size, // Count only unique images
             status_code: 200,
         });
 
