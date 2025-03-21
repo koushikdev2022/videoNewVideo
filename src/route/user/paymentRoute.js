@@ -16,6 +16,6 @@ paymentRoute.post('/transaction-failed',transactionFailed,paymentController.tran
 paymentRoute.post('/transaction-details',paymentController.transactionDetails)
 paymentRoute.post('/wallet',paymentController.wallet)
 paymentRoute.get('/wallet-deduct',paymentController.walletDeduct)
-
+paymentRoute.post('/wallet-deduct-dynamic',paymentController.walletDeductDynamic)
 
 module.exports = paymentRoute

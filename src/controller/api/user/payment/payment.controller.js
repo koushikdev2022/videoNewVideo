@@ -394,3 +394,66 @@ exports.walletDeduct = async(req,res)=>{
     }
        
 }
+exports.walletDeductDynamic = async (req,res)=>{
+    try{
+        const userId = req?.user?.id;
+        const token = req?.body?.token;
+        const userWallet = await Wallet.findOne({
+            where:{
+                user_id:userId
+            }
+        })
+        if(userWallet){
+            const createTransaction = await Transaction.create({
+                user_id:userId,
+                plan_id:0,
+                address_id: 0,
+                total_balance:0,
+                total_credit: token,
+                payment_intend:"NULL",
+                transaction_type:"debit",
+                transaction_success:"success"
+
+            })
+            console.log(userWallet)
+            console.log(userWallet?.balance)
+            const newBalance = userWallet?.balance - token;
+            console.log(newBalance)
+            const updateWallet = await Wallet.update({
+                 balance:newBalance
+            },{
+                where:{
+                    user_id:userId
+                }
+            })
+            if(updateWallet){
+                res.status(200).json({
+                    message:"deducted",
+                    status:true,
+                    status_code:200
+                })
+            }else{
+                res.status(400).json({
+                    message:"true",
+                    status:false,
+                    status_code:400
+                })
+            }
+        }else{
+            res.status(200).json({
+                messsage: "invalid token",
+                status: false,
+                status_code: 400,
+            })
+        }
+    }catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
