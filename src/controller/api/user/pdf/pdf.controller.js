@@ -49,12 +49,19 @@ exports.pageCount = async(req,res)=>{
             ops.fnArray.forEach((fn, index) => {
                 if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
                     const imageKey = ops.argsArray[index]?.[0]; // Extract image object name
-                    const imageProps = ops.argsArray[index]?.[1]; // Get image properties
+                    const imageProps = ops.argsArray[index]?.[1] || {}; // Ensure it's an object
 
-                    if (imageKey && imageProps?.width && imageProps?.height) {
-                        // Filter out very small images (icons, placeholders)
-                        if (imageProps.width > 30 && imageProps.height > 30) {
+                    if (imageKey) {
+                        // Ensure width & height exist, and filter very small images
+                        if (
+                            typeof imageProps.width === "number" &&
+                            typeof imageProps.height === "number" &&
+                            imageProps.width > 30 &&
+                            imageProps.height > 30
+                        ) {
                             uniqueImages.add(imageKey);
+                        } else {
+                            uniqueImages.add(imageKey); // Fallback: count if properties are missing
                         }
                     }
                 }
@@ -67,6 +74,7 @@ exports.pageCount = async(req,res)=>{
             imageCount: uniqueImages.size, // Count only unique real images
             status_code: 200,
         });
+
     } catch (err) {
         console.error("Error in register function: ", err);
         const status = err?.status || 500;
