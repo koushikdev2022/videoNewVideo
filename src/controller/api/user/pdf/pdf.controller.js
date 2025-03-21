@@ -62,7 +62,7 @@ exports.pageCount = async(req,res)=>{
         res.status(200).json({
             status: true,
             pageCount,
-            imageCount: uniqueImages.size, // Count only valid images
+            imageCount: uniqueImages.size, 
             status_code: 200,
         });
     } catch (err) {
