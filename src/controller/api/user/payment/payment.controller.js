@@ -398,6 +398,13 @@ exports.walletDeductDynamic = async (req,res)=>{
     try{
         const userId = req?.user?.id;
         const token = req?.body?.token;
+        if(!token){
+            res.status(422).json({
+                status:false,
+                status_code:422,
+                message:"token required"
+            })
+        }
         const userWallet = await Wallet.findOne({
             where:{
                 user_id:userId
