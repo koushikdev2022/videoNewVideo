@@ -45,19 +45,19 @@ exports.pageCount = async(req,res)=>{
         for (let i = 1; i <= pageCount; i++) {
             const page = await pdfDoc.getPage(i);
             const ops = await page.getOperatorList();
-            const resourceDict = await page.getResources();
 
-            // Find all XObject keys (potential images)
-            if (resourceDict && resourceDict["XObject"]) {
-                const xObjects = resourceDict["XObject"];
+            const seenXObjects = new Set(); // Avoid counting duplicate references
 
-                for (const key in xObjects) {
-                    const obj = xObjects[key];
-                    if (obj && obj.subtype === "Image") {
+            ops.fnArray.forEach((fn, index) => {
+                if (fn === pdfjsLib.OPS.paintImageXObject || fn === pdfjsLib.OPS.paintJpegXObject) {
+                    const imageKey = ops.argsArray[index]?.[0]; // Extract image object name
+
+                    if (imageKey && !seenXObjects.has(imageKey)) {
+                        seenXObjects.add(imageKey);
                         imageCount++;
                     }
                 }
-            }
+            });
         }
 
         res.status(200).json({
