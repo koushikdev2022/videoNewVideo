@@ -13,6 +13,7 @@ const addressRoute =require("./addressRoute")
 const profileRoute = require("./profileRoute")
 const resetPasswordRoute = require("./resetpasswordRoute");
 const featureVideoRoute = require("./featureVideoRoute");
+const pdfRoute = require("./pdfRoute");
 
 const defaultRoutes = [
     {
@@ -68,6 +69,11 @@ const defaultRoutes = [
     {
         prefix: "/feature-video",
         route: featureVideoRoute,
+    },
+    {
+        prefix: "/pdf",
+        route: pdfRoute,
+        middleware:isUserAuthenticateMiddleware
     },
 ]
 defaultRoutes.forEach((route) => {
