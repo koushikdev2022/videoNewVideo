@@ -17,6 +17,6 @@ adminUserRoute.post("/video-status",userController.videoStatus);
 adminUserRoute.post("/video-feature",userController.videoFeature);
 adminUserRoute.get("/user-video-list/:entity/:limit/:page/:user_id",userController.userVideo);
 
-
+adminUserRoute.post("/video-delete",userController.delete);
 
 module.exports = adminUserRoute;
