@@ -432,8 +432,8 @@ exports.delete = async (req,res)=>{
         const convertVideo = videoData?.converted_video
         const thumbnail = videoData?.thumbnail
         if(videoData){
-            const deleteData  = true;
-            // const deleteData = await videoData.destroy();
+           
+            const deleteData = await videoData.destroy();
             if(deleteData) {
                 return res.status(200).json({
                     status:true,
