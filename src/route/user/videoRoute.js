@@ -10,6 +10,6 @@ const videoController = require("../../controller/api/user/video/video.controlle
 videoRoute.get('/list/:entity/:limit/:page',videoController.list)
 videoRoute.post('/create',videoValidation,videoController.create)
 videoRoute.post('/update',videoController.update)
-
+videoRoute.post('/delete',videoController.delete)
 
 module.exports = videoRoute
