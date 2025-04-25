@@ -181,6 +181,7 @@ exports.create = async (req,res)=>{
 exports.delete = async (req,res)=>{
     try{
         const payload = req?.body
+        const userId = req?.user?.id
         if(!payload?.video_id){
             return res.status(422).json({
                 status:false,
@@ -189,25 +190,39 @@ exports.delete = async (req,res)=>{
             }) 
         }
         const videoData = await Video?.findByPk(payload?.video_id)
-        const videoUrl  =  videoData?.video
+        const videoUrl = `https://storylimopythonapi.storylimo.com/${videoData?.video}`;
         const convertVideo = videoData?.converted_video
         const thumbnail = videoData?.thumbnail
         if(videoData){
-   
-            const deleteData = await videoData.destroy();
-            if(deleteData) {
-                return res.status(200).json({
-                    status:true,
-                    status_code:200,
-                    message:"video deleted successfully"
-                })
+            const deleteFolder = await axios.post("https://storylimopythonapi.storylimo.com/agent/delete-video",{
+                "user_id": userId,
+                "video_url": videoUrl,
+                "thumbnail_url": thumbnail
+            })
+            const statusData = deleteFolder?.data?.status_code
+            if(statusData){
+                const deleteData = await videoData.destroy();
+                if(deleteData) {
+                    return res.status(200).json({
+                        status:true,
+                        status_code:200,
+                        message:"video deleted successfully"
+                    })
+                }else{
+                    return res.status(400).json({
+                        status:false,
+                        status_code:400,
+                        message:"something went worng to delete video"
+                    })
+                }
             }else{
                 return res.status(400).json({
                     status:false,
                     status_code:400,
-                    message:"something went worng to delete video"
+                    message:"faild to delete file"
                 })
             }
+     
         }else{
             return res.status(422).json({
                 status:false,

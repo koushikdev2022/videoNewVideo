@@ -411,7 +411,7 @@ exports.videoFeature = async(req,res)=>{
         return res.status(status).json({
             msg,
             status: false,
-            status_code: statusṆ
+            status_code: status
         })
     }
 }
@@ -419,41 +419,55 @@ exports.videoFeature = async(req,res)=>{
 
 exports.delete = async (req,res)=>{
     try{
-        const payload = req?.body
-        if(!payload?.video_id){
-            return res.status(422).json({
-                status:false,
-                status_code:422,
-                message:"video_id is require",
-            }) 
-        }
-        const videoData = await Video?.findByPk(payload?.video_id)
-        const videoUrl  =  videoData?.video
-        const convertVideo = videoData?.converted_video
-        const thumbnail = videoData?.thumbnail
-        if(videoData){
-           
-            const deleteData = await videoData.destroy();
-            if(deleteData) {
-                return res.status(200).json({
-                    status:true,
-                    status_code:200,
-                    message:"video deleted successfully"
-                })
-            }else{
-                return res.status(400).json({
-                    status:false,
-                    status_code:400,
-                    message:"something went worng to delete video"
-                })
-            }
-        }else{
-            return res.status(422).json({
-                status:false,
-                status_code:422,
-                message:"video_is is empty",
-            })
-        }
+                const payload = req?.body
+                if(!payload?.video_id){
+                    return res.status(422).json({
+                        status:false,
+                        status_code:422,
+                        message:"video_id is require",
+                    }) 
+                }
+                const videoData = await Video?.findByPk(payload?.video_id)
+                const videoUrl = `https://storylimopythonapi.storylimo.com/${videoData?.video}`;
+                const convertVideo = videoData?.converted_video
+                const thumbnail = videoData?.thumbnail
+                if(videoData){
+                    const deleteFolder = await axios.post("https://storylimopythonapi.storylimo.com/agent/delete-video",{
+                        "user_id": convertVideo?.user_id,
+                        "video_url": videoUrl,
+                        "thumbnail_url": thumbnail
+                    })
+                    const statusData = deleteFolder?.data?.status_code
+                    if(statusData){
+                        const deleteData = await videoData.destroy();
+                        if(deleteData) {
+                            return res.status(200).json({
+                                status:true,
+                                status_code:200,
+                                message:"video deleted successfully"
+                            })
+                        }else{
+                            return res.status(400).json({
+                                status:false,
+                                status_code:400,
+                                message:"something went worng to delete video"
+                            })
+                        }
+                    }else{
+                        return res.status(400).json({
+                            status:false,
+                            status_code:400,
+                            message:"faild to delete file"
+                        })
+                    }
+             
+                }else{
+                    return res.status(422).json({
+                        status:false,
+                        status_code:422,
+                        message:"video_is is empty",
+                    })
+                }
     }catch (err) {
         console.log("Error in login authController: ", err);
         const status = err?.status || 400;
