@@ -1,4 +1,4 @@
-const {Plan} = require("../../../../models")
+const {Plan,Token} = require("../../../../models")
 
 
 exports.list = async(req,res)=>{
@@ -26,6 +26,45 @@ exports.list = async(req,res)=>{
                 data: plan,
                 data_count: totalPlan,
                 page: page
+            })
+        } else {
+            res.status(200).json({
+                messsage: "no data found",
+                status: true,
+                status_code: 200,
+                data: plan,
+                data_count: totalPlan,
+                page: page
+            })
+        }
+    } catch (err) {
+        console.log("Error in login authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            msg,
+            status: false,
+            status_code: status
+        })
+    }
+}
+
+exports.tokenList= async(req,res)=>{
+    try {
+        const limit = req?.body?.limit || 10;
+        const page = req?.body?.page || 1;
+        const offset = (page - 1) * limit;
+        const query = {
+            where: {},
+        }
+        query.where.is_active=1
+        const plan = await Token.findAll(query)
+        if (plan) {
+            res.status(200).json({
+                messsage: "data found",
+                status: true,
+                status_code: 200,
+                data: plan,
             })
         } else {
             res.status(200).json({
