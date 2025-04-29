@@ -75,7 +75,7 @@ exports.tokenList= async(req,res)=>{
                 data_count: totalPlan,
                 page: page
             })
-        }
+        } 
     } catch (err) {
         console.log("Error in login authController: ", err);
         const status = err?.status || 400;
