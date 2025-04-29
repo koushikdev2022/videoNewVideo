@@ -11,4 +11,7 @@ planRoute.post('/list',planController.list);
 planRoute.post('/status',planController.status);
 
 
+planRoute.post('/token-list',planController.tokenList);
+planRoute.post('/token-update',planController.tokenUpdate);
+
 module.exports = planRoute;
