@@ -27,8 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
+   
     username: DataTypes.STRING,
     password: DataTypes.STRING,
+    youtube_access_token:DataTypes.STRING,
+    youtube_refresh_token:DataTypes.STRING,
+    access_key:DataTypes.STRING,
+    secret_key:DataTypes.STRING,
     full_name: DataTypes.STRING,
     first_name: DataTypes.STRING,
     last_name: DataTypes.STRING,

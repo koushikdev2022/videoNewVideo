@@ -14,6 +14,7 @@ const profileRoute = require("./profileRoute")
 const resetPasswordRoute = require("./resetpasswordRoute");
 const featureVideoRoute = require("./featureVideoRoute");
 const pdfRoute = require("./pdfRoute");
+const youtubeRoute = require("./youtubeRoute");
 
 const defaultRoutes = [
     {
@@ -73,6 +74,11 @@ const defaultRoutes = [
     {
         prefix: "/pdf",
         route: pdfRoute,
+        middleware:isUserAuthenticateMiddleware
+    },
+    {
+        prefix: "/youtube",
+        route: youtubeRoute,
         middleware:isUserAuthenticateMiddleware
     },
 ]
