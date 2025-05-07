@@ -5,8 +5,8 @@ const axios = require('axios');
 const { google } = require('googleapis');
 const { spawn } = require('child_process');
 
-const CLIENT_ID = process.env.YOUTUBE_CLIENT_ID || 'YOUR_CLIENT_ID';
-const CLIENT_SECRET = process.env.YOUTUBE_CLIENT_SECRET || 'YOUR_CLIENT_SECRET';
+// const CLIENT_ID = process.env.YOUTUBE_CLIENT_ID || 'YOUR_CLIENT_ID';
+// const CLIENT_SECRET = process.env.YOUTUBE_CLIENT_SECRET || 'YOUR_CLIENT_SECRET';
 const REDIRECT_URI = process.env.YOUTUBE_REDIRECT_URI ||'http://localhost:3015/user/youtube/oauth2callback';
 
 
@@ -20,13 +20,16 @@ async function downloadVideo(videoUrl, outputPath) {
     });
   }
   
-function getOAuth2Client() {
+  const getOAuth2Client = (userData) => {
+    const client_id_key = userData?.access_key;
+    const client_secret_key = userData?.secret_key;
+    return new google.auth.OAuth2(client_id_key, client_secret_key, REDIRECT_URI);
+  }
 
-  return new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
-}
-
-exports.getYoutubeAuthUrl = (req, res) => {
-    const oauth2Client = getOAuth2Client();
+exports.getYoutubeAuthUrl = async (req, res) => {
+    const userId = req?.user?.id
+    const userData = await User.findByPk(userId)
+    const oauth2Client = getOAuth2Client(userData);
     const scopes = ['https://www.googleapis.com/auth/youtube.upload'];
     const url = oauth2Client.generateAuthUrl({
       access_type: 'offline',
@@ -39,6 +42,7 @@ exports.youtubeOAuthCallback = async (req, res) => {
     // Get code and user_id from URL query parameters
     const code  = req?.body?.code;
     const userId = req?.user?.id;
+    const userData = await User.findByPk(userId)
     console.log(code)
     // Validate required parameters
     if (!code) {
@@ -49,7 +53,7 @@ exports.youtubeOAuthCallback = async (req, res) => {
       });
     }
   
-    const oauth2Client = getOAuth2Client();
+    const oauth2Client = getOAuth2Client(userData);
   
     try {
       // Exchange code for tokens
@@ -68,7 +72,7 @@ exports.youtubeOAuthCallback = async (req, res) => {
         refresh_token: tokens.refresh_token
       });
     } catch (err) {
-      res.status(500).json({ 
+      res.status(400).json({ 
         message: "YouTube authorization failed: " + err.message, 
         status: false 
       });
@@ -101,107 +105,12 @@ exports.downloadVideo = async (req, res) => {
     //   await Video.update({ local_file_path: outputPath }, { where: { id: video_id } });
       res.status(200).json({ message: "Video downloaded", local_file_path: outputPath, status: true,status_code:200 });
     } catch (err) {
-      res.status(500).json({ message: "Download failed: " + err.message, status: false });
+      res.status(400).json({ message: "Download failed: " + err.message, status: false ,status_code:400 });
     }
   };
   
 
-//   exports.uploadYoutube = async (req, res) => {
-//     const userId = req.user.id;
-//     const videoId = req.body.video_id;
-//     if (!videoId) return res.status(422).json({ message: "video id required", status: false });
-  
-//     const user = await User.findByPk(userId);
-//     if (!user || !user.youtube_access_token || !user.youtube_refresh_token) {
-//       // Not authorized yet
-//       const oauth2Client = getOAuth2Client();
-//       const url = oauth2Client.generateAuthUrl({
-//         access_type: 'offline',
-//         scope: ['https://www.googleapis.com/auth/youtube.upload'],
-//         prompt: 'consent'
-//       });
-//       return res.status(432).json({
-//         message: "YouTube authentication required.",
-//         auth_url: url,
-//         status: false
-//       });
-//     }
-  
-//     // Find video in DB
-//     const videoData = await Video.findByPk(videoId);
-//     if (!videoData || !videoData.video) {
-//       return res.status(422).json({ message: "Video not found", status: false });
-//     }
-  
-//     // Download video file
-//     const videoUrl = `${process.env.VIDEO_URL}${videoData.video}`;
-//     const dirPath = path.join(__dirname, '../../../../../public/uploads/videoYoutube');
-//     if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
-//     const extension = path.extname(videoData.video) || '.mp4';
-//     const filename = `video_${Date.now()}_${videoData.id}${extension}`;
-//     const outputPath = path.join(dirPath, filename);
-  
-//     try {
-//       await downloadVideo(videoUrl, outputPath);
-//     } catch (err) {
-//       return res.status(500).json({ message: "Failed to download video: " + err.message, status: false });
-//     }
-  
-//     // Upload to YouTube
-//     try {
-//       const oauth2Client = getOAuth2Client();
-//       oauth2Client.setCredentials({
-//         access_token: user.youtube_access_token,
-//         refresh_token: user.youtube_refresh_token
-//       });
-  
-//       // Refresh access token if needed
-//       oauth2Client.on('tokens', async (tokens) => {
-//         if (tokens.access_token) {
-//           await User.update({ youtube_access_token: tokens.access_token }, { where: { id: userId } });
-//         }
-//         if (tokens.refresh_token) {
-//           await User.update({ youtube_refresh_token: tokens.refresh_token }, { where: { id: userId } });
-//         }
-//       });
-  
-//       const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
-//       const requestBody = {
-//         snippet: {
-//           title: videoData.title || 'Uploaded Video',
-//           description: videoData.description || 'Video uploaded via API',
-//           tags: ['api', 'upload'],
-//           categoryId: '22'
-//         },
-//         status: { privacyStatus: 'private' }
-//       };
-  
-//       const response = await youtube.videos.insert({
-//         part: 'snippet,status',
-//         requestBody,
-//         media: { body: fs.createReadStream(outputPath) }
-//       });
-  
-//       // Save YouTube ID to DB
-//       await Video.update({
-//         youtube_id: response.data.id,
-//         youtube_upload_status: 'completed'
-//       }, { where: { id: videoId } });
-  
-//       // Optionally delete the local file
-//       fs.unlinkSync(outputPath);
-  
-//       res.status(200).json({ message: "Video uploaded to YouTube", youtube_id: response.data.id, status: true });
-  
-//     } catch (err) {
-//       await Video.update({
-//         youtube_upload_status: 'failed',
-//         youtube_error: err.message.substring(0, 255)
-//       }, { where: { id: videoId } });
-//       res.status(500).json({ message: "YouTube upload failed: " + err.message, status: false });
-//     }
-//   };
-  // POST /api/video/upload-youtube
+
 exports.uploadYoutube = async (req, res) => {
     try{
         const userId = req.user.id;
@@ -210,6 +119,7 @@ exports.uploadYoutube = async (req, res) => {
         const code  = req?.body?.code;
         const scope = req?.body?.scope
         const videoData = await Video.findByPk(videoId)
+        const userData = await User.findByPk(userId)
         if(!videoData){
             return res.status(422).json({ 
                 message: "no video found", 
@@ -227,7 +137,7 @@ exports.uploadYoutube = async (req, res) => {
           });
         }
       
-        const oauth2Client = getOAuth2Client();
+        const oauth2Client = getOAuth2Client(userData);
       
         
        
@@ -247,7 +157,7 @@ exports.uploadYoutube = async (req, res) => {
        
         
         try {
-          const oauth2Client = getOAuth2Client();
+          const oauth2Client = getOAuth2Client(userData);
           oauth2Client.setCredentials({
             access_token:  tokens.access_token,
             refresh_token: tokens.refresh_token
@@ -288,7 +198,7 @@ exports.uploadYoutube = async (req, res) => {
       
           fs.unlinkSync(videourl);
       
-          res.status(200).json({ message: "Video uploaded to YouTube", youtube_id: response.data.id, status: true });
+          res.status(200).json({ message: "Video uploaded to YouTube", youtube_id: response.data.id, status: true,status_code: 200 });
         } catch (err) {
           await Video.update({
             youtube_upload_status: 'failed',
@@ -303,7 +213,9 @@ exports.uploadYoutube = async (req, res) => {
         return res.status(status).json({
             message:msg,
             status: false,
-            status_code: status
+            status_code: status,
+            status_code:400
+
         })
     }
   

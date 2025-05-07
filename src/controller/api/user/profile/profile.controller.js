@@ -12,7 +12,9 @@ exports.update = async (req,res) =>{
             last_name:payload?.last_name,
             email :payload?.email ,
             phone :payload?.phone ,
-            dob:payload?.dob
+            dob:payload?.dob,
+            access_key:payload?.access_key,
+            secret_key:payload?.secret_key
         },{
             where:{
                 id:userId
