@@ -7,7 +7,7 @@ const { spawn } = require('child_process');
 
 // const CLIENT_ID = process.env.YOUTUBE_CLIENT_ID || 'YOUR_CLIENT_ID';
 // const CLIENT_SECRET = process.env.YOUTUBE_CLIENT_SECRET || 'YOUR_CLIENT_SECRET';
-const REDIRECT_URI = process.env.YOUTUBE_REDIRECT_URI ||'http://localhost:3015/user/youtube/oauth2callback';
+const REDIRECT_URI = process.env.REDIRECT_URL ||'http://localhost:3015/user/youtube/oauth2callback';
 
 
 async function downloadVideo(videoUrl, outputPath) {
@@ -27,7 +27,7 @@ async function downloadVideo(videoUrl, outputPath) {
   }
 
 exports.getYoutubeAuthUrl = async (req, res) => {
-    const redirect = process?.env?.REDIRECT_URL
+    // const redirect = process?.env?.REDIRECT_URL
     const userId = req?.user?.id
     const userData = await User.findByPk(userId)
     const oauth2Client = getOAuth2Client(userData);
@@ -36,7 +36,7 @@ exports.getYoutubeAuthUrl = async (req, res) => {
       access_type: 'offline',
       scope: scopes,
       prompt: 'consent',
-      redirect_uri: redirect
+      // redirect_uri: redirect
     });
     res.status(200).json({ url:url,status:true,status_code:200 });
 };
@@ -113,204 +113,204 @@ exports.downloadVideo = async (req, res) => {
   
 
 
-// exports.uploadYoutube = async (req, res) => {
-//     try{
-//         const userId = req.user.id;
-//         const videoId = req.body.video_id;
-//         const videourl = req.body.video_url;
-//         const code  = req?.body?.code;
-//         const scope = req?.body?.scope
-//         const videoData = await Video.findByPk(videoId)
-//         const userData = await User.findByPk(userId)
-//         if(!videoData){
-//             return res.status(422).json({ 
-//                 message: "no video found", 
-//                 status: false ,
-//                 status_code:422
-//               });
-//         }
-//         console.log(code)
-//         // Validate required parameters
-//         if (!code) {
-//           return res.status(422).json({ 
-//             message: "Authorization code and user_id are required in the URL parameters", 
-//             status: false ,
-//             status_code:422
-//           });
-//         }
-      
-//         const oauth2Client = getOAuth2Client(userData);
-      
-        
-       
-//         const { tokens } = await oauth2Client.getToken(code);
-      
-        
-//         console.log(tokens)
-//         if (!videoId) return res.status(422).json({ message: "video id required", status: false,status_code:422 });
-//         if (!videourl) return res.status(422).json({ message: "video_url required", status: false,status_code:422 });
-      
-//         const redirect = process?.env?.REDIRECT_URL
-//           const url = oauth2Client.generateAuthUrl({
-//             access_type: 'offline',
-//             scope: [scope],
-//             prompt: 'consent',
-//             redirect_uri: redirect
-//           });
-       
-        
-//         try {
-//           const oauth2Client = getOAuth2Client(userData);
-//           oauth2Client.setCredentials({
-//             access_token:  tokens.access_token,
-//             refresh_token: tokens.refresh_token
-//           });
-      
-//           oauth2Client.on('tokens', async (tokens) => {
-//             if (tokens.access_token) {
-//               await User.update({ youtube_access_token: tokens.access_token }, { where: { id: userId } });
-//             }
-//             if (tokens.refresh_token) {
-//               await User.update({ youtube_refresh_token: tokens.refresh_token }, { where: { id: userId } });
-//             }
-//           });
-      
-//           const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
-//           const response = await youtube.videos.insert({
-//             part: 'snippet,status',
-//             requestBody: {
-//               snippet: {
-//                 title: videoData.title || 'Uploaded Video',
-//                 description: videoData.description || 'Video uploaded via API',
-//                 tags: ['api', 'upload'],
-//                 categoryId: '22'
-//               },
-//               status: { privacyStatus: 'public' }
-//             },
-//             media: { body: fs.createReadStream(videourl) }
-//           });
-      
-//           await Video.update({
-//             youtube_id: response.data.id,
-//             youtube_upload_status: 'completed'
-//           }, { where: { id: videoId } });
-//           await User.update({
-//             youtube_access_token: tokens.access_token,
-//             youtube_refresh_token: tokens.refresh_token
-//             }, { where: { id: userId } });
-      
-//           fs.unlinkSync(videourl);
-      
-//           res.status(200).json({ message: "Video uploaded to YouTube", youtube_id: response.data.id, status: true,status_code: 200 });
-//         } catch (err) {
-//           await Video.update({
-//             youtube_upload_status: 'failed',
-//             youtube_error: err.message.substring(0, 255)
-//           }, { where: { id: videoId } });
-//           res.status(400).json({ message: "YouTube upload failed: " + err.message, status: false,status_code: 400 });
-//         }
-//     }catch (err) {
-//         console.log("Error in get new token authController: ", err);
-//         const status = err?.status || 400;
-//         const msg = err?.message || "Internal Server Error";
-//         return res.status(status).json({
-//             message:msg,
-//             status: false,
-//             status_code: status,
-//             status_code:400
-
-//         })
-//     }
-  
-//   };
-  
-
 exports.uploadYoutube = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const { video_id: videoId, video_url: videourl, code, scope } = req.body;
+    try{
+        const userId = req.user.id;
+        const videoId = req.body.video_id;
+        const videourl = req.body.video_url;
+        const code  = req?.body?.code;
+        const scope = req?.body?.scope
+        const videoData = await Video.findByPk(videoId)
+        const userData = await User.findByPk(userId)
+        if(!videoData){
+            return res.status(422).json({ 
+                message: "no video found", 
+                status: false ,
+                status_code:422
+              });
+        }
+        console.log(code)
+        // Validate required parameters
+        if (!code) {
+          return res.status(422).json({ 
+            message: "Authorization code and user_id are required in the URL parameters", 
+            status: false ,
+            status_code:422
+          });
+        }
+      
+        const oauth2Client = getOAuth2Client(userData);
+      
+        
+       
+        const { tokens } = await oauth2Client.getToken(code);
+      
+        
+        console.log(tokens)
+        if (!videoId) return res.status(422).json({ message: "video id required", status: false,status_code:422 });
+        if (!videourl) return res.status(422).json({ message: "video_url required", status: false,status_code:422 });
+      
+        const redirect = process?.env?.REDIRECT_URL
+          const url = oauth2Client.generateAuthUrl({
+            access_type: 'offline',
+            scope: [scope],
+            prompt: 'consent',
+            redirect_uri: redirect
+          });
+       
+        
+        try {
+          const oauth2Client = getOAuth2Client(userData);
+          oauth2Client.setCredentials({
+            access_token:  tokens.access_token,
+            refresh_token: tokens.refresh_token
+          });
+      
+          oauth2Client.on('tokens', async (tokens) => {
+            if (tokens.access_token) {
+              await User.update({ youtube_access_token: tokens.access_token }, { where: { id: userId } });
+            }
+            if (tokens.refresh_token) {
+              await User.update({ youtube_refresh_token: tokens.refresh_token }, { where: { id: userId } });
+            }
+          });
+      
+          const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+          const response = await youtube.videos.insert({
+            part: 'snippet,status',
+            requestBody: {
+              snippet: {
+                title: videoData.title || 'Uploaded Video',
+                description: videoData.description || 'Video uploaded via API',
+                tags: ['api', 'upload'],
+                categoryId: '22'
+              },
+              status: { privacyStatus: 'public' }
+            },
+            media: { body: fs.createReadStream(videourl) }
+          });
+      
+          await Video.update({
+            youtube_id: response.data.id,
+            youtube_upload_status: 'completed'
+          }, { where: { id: videoId } });
+          await User.update({
+            youtube_access_token: tokens.access_token,
+            youtube_refresh_token: tokens.refresh_token
+            }, { where: { id: userId } });
+      
+          fs.unlinkSync(videourl);
+      
+          res.status(200).json({ message: "Video uploaded to YouTube", youtube_id: response.data.id, status: true,status_code: 200 });
+        } catch (err) {
+          await Video.update({
+            youtube_upload_status: 'failed',
+            youtube_error: err.message.substring(0, 255)
+          }, { where: { id: videoId } });
+          res.status(400).json({ message: "YouTube upload failed: " + err.message, status: false,status_code: 400 });
+        }
+    }catch (err) {
+        console.log("Error in get new token authController: ", err);
+        const status = err?.status || 400;
+        const msg = err?.message || "Internal Server Error";
+        return res.status(status).json({
+            message:msg,
+            status: false,
+            status_code: status,
+            status_code:400
 
-    // Validate inputs
-    if (!code || !videoId || !videourl) {
-      return res.status(422).json({
-        message: "code, video_id, and video_url are required",
-        status: false,
-        status_code: 422
-      });
+        })
     }
+  
+  };
+  
 
-    // Fetch video and user data
-    const videoData = await Video.findByPk(videoId);
-    const userData = await User.findByPk(userId);
-    if (!videoData) {
-      return res.status(422).json({
-        message: "No video found",
-        status: false,
-        status_code: 422
-      });
-    }
+// exports.uploadYoutube = async (req, res) => {
+//   try {
+//     const userId = req.user.id;
+//     const { video_id: videoId, video_url: videourl, code, scope } = req.body;
 
-    // Initialize OAuth2 client
-    const oauth2Client = getOAuth2Client(userData);
-    const redirectUri = process.env.REDIRECT_URL;
-    oauth2Client.setRedirectUri(redirectUri);
+//     // Validate inputs
+//     if (!code || !videoId || !videourl) {
+//       return res.status(422).json({
+//         message: "code, video_id, and video_url are required",
+//         status: false,
+//         status_code: 422
+//       });
+//     }
 
-    // Get tokens from the auth code
-    const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
+//     // Fetch video and user data
+//     const videoData = await Video.findByPk(videoId);
+//     const userData = await User.findByPk(userId);
+//     if (!videoData) {
+//       return res.status(422).json({
+//         message: "No video found",
+//         status: false,
+//         status_code: 422
+//       });
+//     }
 
-    // Save tokens to DB
-    await User.update({
-      youtube_access_token: tokens.access_token,
-      youtube_refresh_token: tokens.refresh_token
-    }, { where: { id: userId } });
+//     // Initialize OAuth2 client
+//     const oauth2Client = getOAuth2Client(userData);
+//     const redirectUri = process.env.REDIRECT_URL;
+//     oauth2Client.setRedirectUri(redirectUri);
 
-    // Upload video to YouTube
-    const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+//     // Get tokens from the auth code
+//     const { tokens } = await oauth2Client.getToken(code);
+//     oauth2Client.setCredentials(tokens);
 
-    const response = await youtube.videos.insert({
-      part: 'snippet,status',
-      requestBody: {
-        snippet: {
-          title: videoData.title || 'Uploaded Video',
-          description: videoData.description || 'Video uploaded via API',
-          tags: ['api', 'upload'],
-          categoryId: '22'
-        },
-        status: { privacyStatus: 'public' }
-      },
-      media: { body: fs.createReadStream(videourl) }
-    });
+//     // Save tokens to DB
+//     await User.update({
+//       youtube_access_token: tokens.access_token,
+//       youtube_refresh_token: tokens.refresh_token
+//     }, { where: { id: userId } });
 
-    // Save video info in DB and delete local file
-    await Video.update({
-      youtube_id: response.data.id,
-      youtube_upload_status: 'completed'
-    }, { where: { id: videoId } });
+//     // Upload video to YouTube
+//     const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
 
-    fs.unlinkSync(videourl); // delete local file after upload
+//     const response = await youtube.videos.insert({
+//       part: 'snippet,status',
+//       requestBody: {
+//         snippet: {
+//           title: videoData.title || 'Uploaded Video',
+//           description: videoData.description || 'Video uploaded via API',
+//           tags: ['api', 'upload'],
+//           categoryId: '22'
+//         },
+//         status: { privacyStatus: 'public' }
+//       },
+//       media: { body: fs.createReadStream(videourl) }
+//     });
 
-    res.status(200).json({
-      message: "Video uploaded to YouTube",
-      youtube_id: response.data.id,
-      status: true,
-      status_code: 200
-    });
+//     // Save video info in DB and delete local file
+//     await Video.update({
+//       youtube_id: response.data.id,
+//       youtube_upload_status: 'completed'
+//     }, { where: { id: videoId } });
 
-  } catch (err) {
-    console.error("Error uploading video:", err);
+//     fs.unlinkSync(videourl); // delete local file after upload
 
-    if (req.body.video_id) {
-      await Video.update({
-        youtube_upload_status: 'failed',
-        youtube_error: err.message?.substring(0, 255)
-      }, { where: { id: req.body.video_id } });
-    }
+//     res.status(200).json({
+//       message: "Video uploaded to YouTube",
+//       youtube_id: response.data.id,
+//       status: true,
+//       status_code: 200
+//     });
 
-    res.status(400).json({
-      message: "YouTube upload failed: " + (err.message || 'Unknown error'),
-      status: false,
-      status_code: 400
-    });
-  }
-};
+//   } catch (err) {
+//     console.error("Error uploading video:", err);
+
+//     if (req.body.video_id) {
+//       await Video.update({
+//         youtube_upload_status: 'failed',
+//         youtube_error: err.message?.substring(0, 255)
+//       }, { where: { id: req.body.video_id } });
+//     }
+
+//     res.status(400).json({
+//       message: "YouTube upload failed: " + (err.message || 'Unknown error'),
+//       status: false,
+//       status_code: 400
+//     });
+//   }
+// };
