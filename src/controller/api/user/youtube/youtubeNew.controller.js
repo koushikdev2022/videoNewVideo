@@ -27,6 +27,7 @@ async function downloadVideo(videoUrl, outputPath) {
   }
 
 exports.getYoutubeAuthUrl = async (req, res) => {
+    const redirect = process?.env?.REDIRECT_URL
     const userId = req?.user?.id
     const userData = await User.findByPk(userId)
     const oauth2Client = getOAuth2Client(userData);
@@ -34,7 +35,8 @@ exports.getYoutubeAuthUrl = async (req, res) => {
     const url = oauth2Client.generateAuthUrl({
       access_type: 'offline',
       scope: scopes,
-      prompt: 'consent'
+      prompt: 'consent',
+      redirect_uri: redirect
     });
     res.status(200).json({ url:url,status:true,status_code:200 });
 };
