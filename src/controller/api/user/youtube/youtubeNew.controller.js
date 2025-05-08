@@ -150,11 +150,12 @@ exports.uploadYoutube = async (req, res) => {
         if (!videoId) return res.status(422).json({ message: "video id required", status: false,status_code:422 });
         if (!videourl) return res.status(422).json({ message: "video_url required", status: false,status_code:422 });
       
-      
+        const redirect = process?.env?.REDIRECT_URL
           const url = oauth2Client.generateAuthUrl({
             access_type: 'offline',
             scope: [scope],
-            prompt: 'consent'
+            prompt: 'consent',
+            redirect_uri: redirect
           });
        
         
